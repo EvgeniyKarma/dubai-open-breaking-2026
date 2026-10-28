@@ -29,4 +29,29 @@ h2{margin:0;width:100%;font-size:2.5rem;font-weight:400;line-height:1;letter-spa
 .learn-more:is(:hover,:focus-visible)::before{clip-path:inset(0 round 100px)}
 .learn-more:is(:hover,:focus-visible) .arrow{background:#111}
 .learn-more:is(:hover,:focus-visible) .arrow-light{opacity:1}
+/* Tablet: the 1024px design has two cards anchored to the bottom. */
+@media(max-width:1200px){
+  :root{font-size:calc(100vw / 64)}
+  .homepage{min-height:calc(42rem + 48px)}
+  .logo{left:auto;bottom:auto;top:var(--window-inset);right:var(--window-inset)}
+  .event-listings{top:auto;left:var(--window-inset);width:auto;height:26.25rem;flex-direction:row}
+  .event-card{min-width:0;height:100%}
+}
+/* Mobile: 440px reference, two stacked cards and no logo. */
+@media(max-width:600px){
+  :root{font-size:calc(100vw / 27.5);--window-inset:16px}
+  .homepage{min-height:calc(47rem + 32px)}
+  .page-title{font-size:3.5rem;letter-spacing:-.14rem}
+  .logo{display:none}
+  .event-listings{height:36.875rem;flex-direction:column}
+  .event-card{width:100%;height:auto;padding:1rem}
+  .event-date,.age-category,.disciplines li,.learn-more{font-size:.875rem;letter-spacing:-.035rem}
+  .event-details{gap:1rem}
+  .age-category{padding:.375rem .75rem}
+  h2{font-size:2rem;letter-spacing:-.08rem}
+  .disciplines li{padding:.375rem 1rem}
+  .learn-more{min-height:2rem}
+  .arrow{width:2rem;height:2rem}
+  .arrow img{width:1rem;height:1rem}
+}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}.title-letter{transform:none}}

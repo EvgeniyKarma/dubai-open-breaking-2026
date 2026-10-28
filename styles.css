@@ -29,18 +29,20 @@ h2{margin:0;width:100%;font-size:2.5rem;font-weight:400;line-height:1;letter-spa
 .learn-more:is(:hover,:focus-visible)::before{clip-path:inset(0 round 100px)}
 .learn-more:is(:hover,:focus-visible) .arrow{background:#111}
 .learn-more:is(:hover,:focus-visible) .arrow-light{opacity:1}
-/* Tablet: the 1024px design has two cards anchored to the bottom. */
+/* Use the visible browser height, including changes to browser toolbars. */
+:root{--viewport-height:100vh}
+@supports(height:100dvh){:root{--viewport-height:100dvh}}
+/* Fit the 1024×1366 reference inside both viewport dimensions. */
 @media(max-width:1200px){
-  :root{font-size:calc(100vw / 64)}
-  .homepage{min-height:calc(42rem + 48px)}
+  :root{font-size:min(calc(100vw / 64),calc((var(--viewport-height) - 48px) / 82.375))}
+  .homepage{min-height:0}
   .logo{left:auto;bottom:auto;top:var(--window-inset);right:var(--window-inset)}
   .event-listings{top:auto;left:var(--window-inset);width:auto;height:26.25rem;flex-direction:row}
   .event-card{min-width:0;height:100%}
 }
-/* Mobile: 440px reference, two stacked cards and no logo. */
+/* Fit the 440×956 reference; keep the 16px window insets fixed. */
 @media(max-width:600px){
-  :root{font-size:calc(100vw / 27.5);--window-inset:16px}
-  .homepage{min-height:calc(47rem + 32px)}
+  :root{font-size:min(calc(100vw / 27.5),calc((var(--viewport-height) - 32px) / 57.75));--window-inset:16px}
   .page-title{font-size:3.5rem;letter-spacing:-.14rem}
   .logo{display:none}
   .event-listings{height:36.875rem;flex-direction:column}

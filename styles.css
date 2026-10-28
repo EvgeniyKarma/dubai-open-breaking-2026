@@ -13,6 +13,7 @@ body{margin:0}
 .logo{position:absolute;left:var(--window-inset);bottom:var(--window-inset);width:6.25rem;height:6.25rem;object-fit:contain}
 .event-listings{position:absolute;top:var(--window-inset);right:var(--window-inset);bottom:var(--window-inset);width:27.5rem;display:flex;flex-direction:column;gap:.25rem}
 .event-card{flex:1;min-height:0;padding:2rem;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;border-radius:.25rem;background:rgb(255 255 255 / .1);backdrop-filter:blur(1.5625rem);-webkit-backdrop-filter:blur(1.5625rem)}
+.event-card{color:inherit;text-decoration:none;cursor:pointer}
 .event-date{margin:0;font-size:1rem;font-weight:500;line-height:1;letter-spacing:-.04rem}
 .event-details{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem;width:100%}
 .age-category{border:1px solid #fff;border-radius:100px;padding:.5rem 1rem;font-size:1rem;line-height:1;letter-spacing:-.04rem;white-space:nowrap}
@@ -24,11 +25,11 @@ h2{margin:0;width:100%;font-size:2.5rem;font-weight:400;line-height:1;letter-spa
 .arrow{position:relative;display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;background:#fff;transition:background .3s ease-in-out}
 .arrow img{position:absolute;width:1.5rem;height:1.5rem}
 .arrow-light{opacity:0;transition:opacity .3s ease-in-out}
-.learn-more:focus-visible{outline:2px solid white;outline-offset:.5rem}
-.learn-more:is(:hover,:focus-visible){color:#111;padding-left:1.5rem;padding-right:.25rem}
-.learn-more:is(:hover,:focus-visible)::before{clip-path:inset(0 round 100px)}
-.learn-more:is(:hover,:focus-visible) .arrow{background:#111}
-.learn-more:is(:hover,:focus-visible) .arrow-light{opacity:1}
+.event-card:focus-visible{outline:2px solid white;outline-offset:4px}
+.event-card:is(:hover,:focus-visible) .learn-more{color:#111;padding-left:1.5rem;padding-right:.25rem}
+.event-card:is(:hover,:focus-visible) .learn-more::before{clip-path:inset(0 round 100px)}
+.event-card:is(:hover,:focus-visible) .learn-more .arrow{background:#111}
+.event-card:is(:hover,:focus-visible) .learn-more .arrow-light{opacity:1}
 /* Use the visible browser height, including changes to browser toolbars. */
 :root{--viewport-height:100vh}
 @supports(height:100dvh){:root{--viewport-height:100dvh}}

@@ -12,6 +12,7 @@ let opener;
 let activeDialog;
 let closing = false;
 let navigationTarget;
+let drawerAnimation;
 
 function updateHeader() {
   scrollFrame = 0;
@@ -43,30 +44,40 @@ function openDialog(dialog, trigger) {
   document.body.style.paddingRight = `${scrollbarWidth}px`;
   dialog.showModal();
   dialog.querySelector('.menu-panel').focus({ preventScroll: true });
-  // Commit the offscreen position before transitioning to the final position.
-  dialog.querySelector('.menu-panel').getBoundingClientRect();
-  requestAnimationFrame(() => {
-    if (!closing && dialog.open) dialog.classList.add('is-open', 'has-opened');
-  });
+  dialog.classList.add('is-open', 'has-opened');
+  const panel = dialog.querySelector('.menu-panel');
+  // Explicit keyframes also animate the first render after showModal().
+  // A CSS transition may skip its initial state when the dialog was display:none.
+  if (!reducedMotion.matches) animatePanel(panel, -panel.offsetWidth, 0);
   toggles.forEach(button => button.setAttribute('aria-expanded', String(dialog === menu)));
+}
+function animatePanel(panel, from, to, onFinish) {
+  const animation = panel.animate([{ right: `${from}px` }, { right: `${to}px` }], {
+    duration: 550,
+    easing: 'ease-in-out',
+    fill: 'both',
+  });
+  drawerAnimation = animation;
+  animation.finished.then(() => {
+    if (drawerAnimation === animation) drawerAnimation = null;
+    animation.cancel();
+    onFinish?.();
+  }).catch(() => {}); // Cancellation is expected when reversing an opening panel.
 }
 function closeDialog(dialog) {
   if (!dialog.open || closing) return;
   closing = true;
   const panel = dialog.querySelector('.menu-panel');
-  let fallback;
-  const finish = () => {
-    clearTimeout(fallback);
-    panel.removeEventListener('transitionend', onEnd);
-    if (dialog.open) dialog.close();
-  };
-  const onEnd = event => { if (event.target === panel && event.propertyName === 'right') finish(); };
-  panel.addEventListener('transitionend', onEnd);
+  const currentRight = parseFloat(getComputedStyle(panel).right);
+  drawerAnimation?.cancel();
+  drawerAnimation = null;
   dialog.classList.remove('is-open');
-  if (reducedMotion.matches) finish();
-  else fallback = setTimeout(finish, 600);
+  if (reducedMotion.matches) dialog.close();
+  else animatePanel(panel, currentRight, -panel.offsetWidth, () => dialog.close());
 }
 function afterClose(event) {
+  drawerAnimation?.cancel();
+  drawerAnimation = null;
   event.target.classList.remove('is-open', 'has-opened');
   document.body.style.cssText = savedBodyStyle;
   activeDialog = null;

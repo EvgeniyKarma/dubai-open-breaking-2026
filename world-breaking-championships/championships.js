@@ -176,9 +176,14 @@ let scheduleFrame = 0;
 let scheduleReady = false;
 let scheduleWidth = window.innerWidth;
 let scheduleResizeTimer;
+const scheduleTextWidths = new WeakMap();
 
-// Measure actual font wrapping, then reveal whole lines without splitting words.
+// Preserve measured word wrapping while revealing individual letters, as in the hero.
 function prepareScheduleText(element) {
+  const width = element.clientWidth;
+  // Keep existing letters (and their animation state) when switching days.
+  // Rebuild masks only for a new element or when its available width changes.
+  if (element.classList.contains('is-prepared') && scheduleTextWidths.get(element) === width) return;
   const fragment = document.createDocumentFragment();
   const words = [];
   scheduleCopies.get(element).split('\n').forEach((text, index) => {
@@ -200,18 +205,33 @@ function prepareScheduleText(element) {
     lines[lines.length - 1].words.push(word.textContent);
   }
   const output = document.createDocumentFragment();
-  lines.forEach((line, index) => {
+  const accessibleCopy = document.createElement('span');
+  accessibleCopy.className = 'schedule-sr-copy';
+  accessibleCopy.textContent = scheduleCopies.get(element).replace(/\s+/g, ' ').trim();
+  output.append(accessibleCopy);
+  let letterIndex = 0;
+  lines.forEach(line => {
     const mask = document.createElement('span');
     mask.className = 'schedule-text-mask';
+    mask.setAttribute('aria-hidden', 'true');
     const content = document.createElement('span');
     content.className = 'schedule-text-line';
-    content.style.setProperty('--schedule-line-index', index);
-    content.textContent = line.words.join(' ');
+    for (const character of line.words.join(' ')) {
+      const letterMask = document.createElement('span');
+      letterMask.className = 'letter-mask';
+      const letter = document.createElement('span');
+      letter.className = 'reveal-letter schedule-letter';
+      letter.style.setProperty('--letter-index', letterIndex++);
+      letter.textContent = character === ' ' ? '\u00a0' : character;
+      letterMask.append(letter);
+      content.append(letterMask);
+    }
     mask.append(content);
     output.append(mask);
   });
   element.replaceChildren(output);
   element.classList.add('is-prepared');
+  scheduleTextWidths.set(element, width);
 }
 function syncScheduleLayout() {
   const previousScrollY = window.scrollY;
@@ -261,7 +281,6 @@ function selectScheduleDay(index, moveFocus = false) {
   selectedDay = index;
   const day = scheduleDays[index];
   day.querySelectorAll('.is-revealed').forEach(element => element.classList.remove('is-revealed'));
-  document.querySelector('#schedule-title').classList.remove('is-revealed');
   syncScheduleLayout();
   // Explicitly commit the reset so revisiting a tab restarts its mask animations.
   day.getBoundingClientRect();

@@ -79,8 +79,9 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 @keyframes schedule-line-draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .js [data-schedule-text]:not(.is-prepared){visibility:hidden}
 .schedule-text-mask{display:block;overflow:hidden;padding-bottom:.15em;margin-bottom:-.15em}
-.schedule-text-line{display:block;transform:translateY(120%)}
-.is-revealed>.schedule-text-mask>.schedule-text-line{animation:letter-reveal .85s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--schedule-line-index) * .06s)}
+.schedule-text-line{display:block;white-space:nowrap}
+.schedule-letter{transform:translateY(120%)}
+.is-revealed .schedule-letter{animation:letter-reveal .85s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.15s + var(--letter-index) * .027s)}
 @media(max-width:1200px){.schedule{--schedule-unit:1px}}
 @media(max-width:600px){
   .schedule{padding:100px 16px}
@@ -94,7 +95,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .calendar-icon::before{mask-image:url(../assets/calendar.svg);-webkit-mask-image:url(../assets/calendar.svg)}
   .schedule-day{display:block}
   .schedule-date{font-size:24px;padding-top:24px;padding-bottom:24px}
-  .schedule-slot{display:flex;flex-direction:column;gap:24px;padding:0 0 64px}
+  .schedule-slot{display:flex;flex-direction:column;gap:24px;padding:0 0 48px}
   .schedule-slot+.schedule-slot{padding-top:24px}
   .schedule-slot:last-child{padding-bottom:0}
   .schedule-time{font-size:24px;margin-bottom:12px}
@@ -102,6 +103,8 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .schedule-notes{font-size:16px;gap:12px}
   .schedule-day[hidden]{display:none}
 }
-@media(prefers-reduced-motion:reduce){.js .schedule-rule{transform:scaleX(1)}.schedule-text-line{transform:none}}
+@media(prefers-reduced-motion:reduce){.js .schedule-rule{transform:scaleX(1)}.schedule-letter{transform:none}}
 
 .schedule-day:last-child .schedule-slot:last-child{padding-bottom:0}
+
+.schedule-sr-copy{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}

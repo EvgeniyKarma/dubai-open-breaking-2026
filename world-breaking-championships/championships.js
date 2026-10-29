@@ -60,7 +60,7 @@ function closeDialog(dialog) {
     panel.removeEventListener('transitionend', onEnd);
     if (dialog.open) dialog.close();
   };
-  const onEnd = event => { if (event.target === panel && event.propertyName === 'transform') finish(); };
+  const onEnd = event => { if (event.target === panel && event.propertyName === 'right') finish(); };
   panel.addEventListener('transitionend', onEnd);
   dialog.classList.remove('is-open');
   if (reducedMotion.matches) finish();

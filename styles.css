@@ -59,3 +59,7 @@ h2{margin:0;width:100%;font-size:2.5rem;font-weight:400;line-height:1;letter-spa
   .arrow img{width:1rem;height:1rem}
 }
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}.title-letter{transform:none}}
+
+/* Hide scrollbar chrome at every breakpoint while retaining native scrolling. */
+*{scrollbar-width:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}

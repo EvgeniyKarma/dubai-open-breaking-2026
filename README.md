@@ -10,4 +10,4 @@ The page uses Google Fonts (Poppins), a muted looping background video and an an
 
 ## Competition pages
 
-`/world-breaking-championships/` contains the responsive first screen, scroll-triggered header, navigation drawer and an empty registration-price drawer. Navigation section targets await the remaining page content. The junior competition page is reserved for future work.
+`/world-breaking-championships/` contains the responsive first screen, scroll-triggered header, navigation drawer and an empty registration-price drawer. The Schedule section includes all three days on desktop/tablet and animated day tabs on mobile. Other navigation targets await the remaining page content. The junior competition page is reserved for future work.

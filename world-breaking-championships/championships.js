@@ -161,3 +161,138 @@ async function animateText() {
   });
 }
 animateText();
+
+// Responsive schedule: accessible day tabs and independently revealed text/lines.
+const schedule = document.querySelector('.schedule');
+const scheduleMobile = matchMedia('(max-width:600px)');
+const scheduleTabs = [...document.querySelectorAll('.schedule-tab')];
+const scheduleDays = [...document.querySelectorAll('.schedule-day')];
+const scheduleText = [...schedule.querySelectorAll('[data-schedule-text]')];
+const scheduleCopies = new Map(scheduleText.map(element => [element,
+  element.innerHTML.replace(/<br\s*\/?\s*>/gi, '\n')
+]));
+let selectedDay = 0;
+let scheduleFrame = 0;
+let scheduleReady = false;
+let scheduleWidth = window.innerWidth;
+let scheduleResizeTimer;
+
+// Measure actual font wrapping, then reveal whole lines without splitting words.
+function prepareScheduleText(element) {
+  const fragment = document.createDocumentFragment();
+  const words = [];
+  scheduleCopies.get(element).split('\n').forEach((text, index) => {
+    if (index) fragment.append(document.createElement('br'));
+    text.trim().split(/\s+/).forEach((word, wordIndex) => {
+      if (wordIndex) fragment.append(' ');
+      const span = document.createElement('span');
+      span.style.display = 'inline-block';
+      span.textContent = word;
+      fragment.append(span);
+      words.push(span);
+    });
+  });
+  element.replaceChildren(fragment);
+  const lines = [];
+  for (const word of words) {
+    const y = word.offsetTop;
+    if (!lines.length || Math.abs(lines[lines.length - 1].y - y) > 1) lines.push({ y, words: [] });
+    lines[lines.length - 1].words.push(word.textContent);
+  }
+  const output = document.createDocumentFragment();
+  lines.forEach((line, index) => {
+    const mask = document.createElement('span');
+    mask.className = 'schedule-text-mask';
+    const content = document.createElement('span');
+    content.className = 'schedule-text-line';
+    content.style.setProperty('--schedule-line-index', index);
+    content.textContent = line.words.join(' ');
+    mask.append(content);
+    output.append(mask);
+  });
+  element.replaceChildren(output);
+  element.classList.add('is-prepared');
+}
+function syncScheduleLayout() {
+  const previousScrollY = window.scrollY;
+  scheduleDays.forEach((day, index) => {
+    day.hidden = scheduleMobile.matches && index !== selectedDay;
+    day.setAttribute('aria-labelledby', scheduleMobile.matches ? scheduleTabs[index].id : `schedule-date-${18 + index}`);
+    if (scheduleMobile.matches) day.setAttribute('role', 'tabpanel');
+    else day.removeAttribute('role');
+  });
+  scheduleTabs.forEach((tab, index) => {
+    tab.setAttribute('aria-selected', String(index === selectedDay));
+    tab.tabIndex = index === selectedDay ? 0 : -1;
+  });
+  if (scheduleReady) {
+    scheduleText.forEach(element => {
+      if (!element.closest('[hidden]')) prepareScheduleText(element);
+    });
+    // Measuring hidden-to-visible panels can briefly shrink the document.
+    // Restore the reading position after all line masks have their final height.
+    window.scrollTo(0, previousScrollY);
+    queueScheduleReveal();
+  }
+}
+function revealSchedule(replayVisible = false) {
+  scheduleFrame = 0;
+  if (!scheduleReady || activeDialog) return;
+  const height = window.innerHeight;
+  // The current page ends here: reveal remaining visible content at its end,
+  // even when there is not enough space below to scroll it to screen center.
+  const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
+  for (const element of schedule.querySelectorAll('[data-schedule-text], .schedule-rule')) {
+    if (element.classList.contains('is-revealed') || element.closest('[hidden]')) continue;
+    const box = element.getBoundingClientRect();
+    const isLine = element.classList.contains('schedule-rule');
+    const threshold = isLine ? height / 2 : height * .85;
+    if (box.top <= threshold || ((replayVisible || atPageEnd) && box.top < height)) element.classList.add('is-revealed');
+  }
+}
+function queueScheduleReveal() {
+  if (!scheduleFrame) scheduleFrame = requestAnimationFrame(() => revealSchedule());
+}
+function selectScheduleDay(index, moveFocus = false) {
+  if (index === selectedDay) {
+    if (moveFocus) scheduleTabs[index].focus({ preventScroll: true });
+    return;
+  }
+  selectedDay = index;
+  const day = scheduleDays[index];
+  day.querySelectorAll('.is-revealed').forEach(element => element.classList.remove('is-revealed'));
+  document.querySelector('#schedule-title').classList.remove('is-revealed');
+  syncScheduleLayout();
+  // Explicitly commit the reset so revisiting a tab restarts its mask animations.
+  day.getBoundingClientRect();
+  if (scheduleFrame) cancelAnimationFrame(scheduleFrame);
+  scheduleFrame = requestAnimationFrame(() => revealSchedule(true));
+  if (moveFocus) scheduleTabs[index].focus({ preventScroll: true });
+}
+scheduleTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectScheduleDay(index));
+  tab.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % scheduleTabs.length;
+    if (event.key === 'ArrowLeft') next = (index + scheduleTabs.length - 1) % scheduleTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = scheduleTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    selectScheduleDay(next, true);
+  });
+});
+window.addEventListener('scroll', queueScheduleReveal, { passive: true });
+window.addEventListener('resize', () => {
+  queueScheduleReveal();
+  if (window.innerWidth === scheduleWidth) return;
+  scheduleWidth = window.innerWidth;
+  clearTimeout(scheduleResizeTimer);
+  scheduleResizeTimer = setTimeout(syncScheduleLayout, 120);
+});
+scheduleMobile.addEventListener('change', syncScheduleLayout);
+syncScheduleLayout();
+document.fonts.ready.then(() => {
+  scheduleReady = true;
+  syncScheduleLayout();
+});

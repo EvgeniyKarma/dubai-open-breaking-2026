@@ -10,4 +10,4 @@ The page uses Google Fonts (Poppins), a muted looping background video and an an
 
 ## Competition pages
 
-The links `/world-breaking-championships/` and `/junior-world-breaking-championships/` are reserved for future pages.
+`/world-breaking-championships/` contains the responsive first screen, scroll-triggered header, navigation drawer and an empty registration-price drawer. Navigation section targets await the remaining page content. The junior competition page is reserved for future work.

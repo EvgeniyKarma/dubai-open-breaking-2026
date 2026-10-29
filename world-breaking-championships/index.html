@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>document.documentElement.classList.add("js");</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="World Breaking Championships, Dubai Open Breaking, 19–20 December 2026. B-Boys, B-Girls and Crew 5vs5.">
+  <title>World Breaking Championships — Dubai Open Breaking 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="championships.css">
+  <script src="championships.js" defer></script>
+</head>
+<body>
+  <main>
+    <section class="hero" id="top" aria-labelledby="championship-title">
+      <video class="background-video" autoplay loop muted playsinline preload="auto" aria-hidden="true"><source src="../wob3_compressed.mp4" type="video/mp4"></video>
+      <header class="hero-header">
+        <p class="event-date">19–20<br>December<br>2026</p>
+        <a class="brand" href="../" aria-label="Dubai Open Breaking home"><img src="../Logo.png" width="100" height="100" alt="Dubai Open Breaking 2026"></a>
+        <nav class="hero-nav" aria-label="Page sections">
+          <a href="#schedule">Schedule</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a>
+        </nav>
+        <button class="menu-toggle hero-toggle" aria-haspopup="dialog" aria-controls="page-menu" aria-expanded="false">Menu<span class="menu-icon" aria-hidden="true"></span></button>
+      </header>
+      <div class="hero-copy">
+        <span class="age-category">16+ Y.O</span>
+        <h1 id="championship-title">World Breaking<br>Championships</h1>
+        <ul class="disciplines" aria-label="Disciplines"><li>B-Boys</li><li>B-Girls</li><li>Crew 5vs5</li></ul>
+        <p class="spectator-price">Spectator ticket (both events) USD 20/day</p>
+      </div>
+      <section class="registration" aria-labelledby="registration-title">
+        <div><h2 id="registration-title">Participant registration</h2><button class="price-link" data-open-price>Registration price</button></div>
+        <a class="signup" href="https://dubaiopenbreaking.com/signup/?tab=adult" target="_blank" rel="noopener noreferrer">SignUp<span class="arrow" aria-hidden="true"><img src="../assets/arrow-right.svg" width="24" height="24" alt=""><img class="arrow-light" src="../assets/arrow-right-light.svg" width="24" height="24" alt=""></span></a>
+      </section>
+    </section>
+    <!-- The remaining section designs and content will supply these navigation targets. -->
+  </main>
+  <header class="sticky-header" inert aria-hidden="true">
+    <a class="sticky-title" href="#top">World Breaking<br>Championships</a>
+    <a class="brand" href="../" aria-label="Dubai Open Breaking home"><img src="../Logo.png" width="50" height="50" alt="Dubai Open Breaking 2026"></a>
+    <button class="menu-toggle" aria-haspopup="dialog" aria-controls="page-menu" aria-expanded="false">Menu<span class="menu-icon" aria-hidden="true"></span></button>
+  </header>
+  <dialog class="menu-dialog" id="page-menu" aria-label="Page navigation">
+    <div class="menu-panel" tabindex="-1" autofocus>
+      <button class="menu-toggle close-menu" aria-label="Close menu">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
+      <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
+    </div>
+  </dialog>
+  <dialog class="menu-dialog price-dialog" aria-label="Registration price">
+    <div class="menu-panel" tabindex="-1" autofocus>
+    <button class="menu-toggle close-price">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
+    </div>
+  </dialog>
+</body>
+</html>

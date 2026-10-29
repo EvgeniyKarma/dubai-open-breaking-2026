@@ -1,0 +1,22 @@
+/* Separate comparison variant; the original homepage and stylesheet stay intact. */
+.mobile-v2-layout,.card-top{display:contents}
+.mobile-v2-break{display:none}
+@media(max-width:600px){
+  .mobile-v2-layout{position:absolute;inset:16px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+  .page-title{position:static;align-self:flex-start;font-size:3rem;letter-spacing:-.12rem}
+  .logo{position:static;display:block;width:7.5rem;height:7.5rem;flex-shrink:0}
+  .event-listings{position:static;display:flex;flex-direction:row;width:100%;height:max(20rem,300px);flex-shrink:0}
+  .event-card{width:auto;height:100%;min-width:0;padding:16px}
+  .card-top{display:flex;flex-direction:column;gap:2rem;width:100%}
+  .event-details{gap:1rem}
+  .mobile-v2-break{display:block}
+  h2{font-size:1.375rem;letter-spacing:-.055rem}
+  .age-category,.disciplines li{font-size:.625rem;letter-spacing:-.025rem}
+  .age-category{padding:.375rem .75rem}
+  .disciplines{width:100%;flex-wrap:wrap;gap:.25rem}
+  .disciplines li{padding:.375rem 1rem}
+  .learn-more{gap:12px;white-space:nowrap}
+  .arrow{width:32px;height:32px}
+  .arrow img{width:16px;height:16px}
+  .event-card:is(:hover,:focus-visible) .learn-more{padding-left:0;padding-right:0}
+}

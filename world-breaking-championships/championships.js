@@ -45,13 +45,31 @@ function openDialog(dialog, trigger) {
   document.body.style.paddingRight = `${scrollbarWidth}px`;
   const scrollContent = dialog.querySelector('.format-panel-content');
   if (scrollContent) scrollContent.scrollTop = 0;
-  dialog.showModal();
-  dialog.querySelector('.menu-panel').focus({ preventScroll: true });
-  dialog.classList.add('is-open', 'has-opened');
   const panel = dialog.querySelector('.menu-panel');
-  // Explicit keyframes also animate the first render after showModal().
-  // A CSS transition may skip its initial state when the dialog was display:none.
-  if (!reducedMotion.matches) animatePanel(panel, -panel.offsetWidth, 0);
+  // Keep the native dialog's autofocus on its stationary viewport, rather than
+  // asking the browser to reveal a focusable panel that is still offscreen.
+  panel.style.right = '-100%';
+  dialog.showModal();
+  dialog.focus({preventScroll:true});
+  dialog.scrollLeft = 0;
+  dialog.scrollTop = 0;
+  const from = -panel.offsetWidth;
+  panel.style.right = `${from}px`;
+  dialog.classList.add('has-opened');
+  // Commit the outside position before activating the open class or animation.
+  panel.getBoundingClientRect();
+  if (reducedMotion.matches) {
+    panel.style.right = '0px';
+    dialog.classList.add('is-open');
+    panel.focus({preventScroll:true});
+  } else requestAnimationFrame(() => {
+    if (!dialog.open || closing || activeDialog !== dialog) return;
+    dialog.classList.add('is-open');
+    panel.style.right = '0px';
+    animatePanel(panel, from, 0, () => {
+      if (dialog.open && !closing && document.activeElement === dialog) panel.focus({preventScroll:true});
+    });
+  });
   toggles.forEach(button => button.setAttribute('aria-expanded', String(dialog === menu)));
   if (dialog.id) document.querySelectorAll(`[aria-controls="${dialog.id}"]`).forEach(button => button.setAttribute('aria-expanded', 'true'));
 }
@@ -83,6 +101,7 @@ function afterClose(event) {
   drawerAnimation?.cancel();
   drawerAnimation = null;
   event.target.classList.remove('is-open', 'has-opened');
+  event.target.querySelector('.menu-panel').style.removeProperty('right');
   document.body.style.cssText = savedBodyStyle;
   activeDialog = null;
   closing = false;

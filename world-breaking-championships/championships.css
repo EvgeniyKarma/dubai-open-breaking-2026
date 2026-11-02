@@ -141,7 +141,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .format-word{display:inline-block;white-space:nowrap}
 .js .format-title{visibility:hidden}.js .format-title.is-prepared{visibility:visible}.js .format-title .reveal-letter{transform:translateY(120%)}
 .format-description{width:553px;max-width:100%;font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.04em}
-.format-learn{margin-top:32px;background:white;height:48px;min-width:0;padding:4px 4px 4px 24px;font-size:16px;gap:12px}
+.format-learn{margin-top:32px;background:white;width:166px;height:48px;min-width:0;padding:4px 4px 4px 24px;font-size:16px;gap:12px}
 .format-learn .menu-icon{width:40px;height:40px}.format-learn .menu-icon::before{width:24px;height:24px;mask-image:url(../assets/arrow-right-light.svg);-webkit-mask-image:url(../assets/arrow-right-light.svg)}
 /* The Close row never scrolls; the content below it is the only scrollport. */
 .format-panel{align-items:stretch;gap:0;padding:0;overflow:hidden}
@@ -158,3 +158,9 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 @media(max-width:1200px){.format-title{font-size:min(calc(150 * 100vw / 1024),calc((var(--viewport-height) - var(--header-height) - 180px) / 2));white-space:normal;max-width:100%}.format-photo{object-position:50% 100%}}
 @media(max-width:600px){.format-title{font-size:min(calc(70 * 100vw / 440),calc((var(--viewport-height) - var(--header-height) - 202px) / 2))}.format-description{width:380px}.format-photo{height:104.72%;object-position:79.1% 0}.format-panel-header{padding-top:max(16px,env(safe-area-inset-top))}.format-panel-content{padding-top:60px;padding-bottom:max(60px,env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.js .format-title .reveal-letter{transform:none}}
+
+/* Learn more keeps its dark label/icon while the orange fill flows in from the right. */
+.format-learn::before{background:#fa4f1f}
+.format-learn:is(:hover,:focus-visible){color:#111}
+.format-learn:is(:hover,:focus-visible) .menu-icon{background:#111;color:white}
+@media(max-width:600px){.format-learn{width:139px;height:40px;padding-left:16px;font-size:14px}.format-learn .menu-icon{width:32px;height:32px}.format-learn .menu-icon::before{width:16px;height:16px}}

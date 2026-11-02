@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261102-competition-format">
-  <script src="championships.js?v=20261102-competition-format" defer></script>
+  <link rel="stylesheet" href="championships.css?v=20261102-buttons-drawer">
+  <script src="championships.js?v=20261102-buttons-drawer" defer></script>
 </head>
 <body>
   <main>
@@ -181,19 +181,19 @@
     <a class="brand" href="../" aria-label="Dubai Open Breaking home"><img src="../Logo.png" width="50" height="50" alt="Dubai Open Breaking 2026"></a>
     <button class="menu-toggle" aria-haspopup="dialog" aria-controls="page-menu" aria-expanded="false">Menu<span class="menu-icon" aria-hidden="true"></span></button>
   </header>
-  <dialog class="menu-dialog" id="page-menu" aria-label="Page navigation">
-    <div class="menu-panel" tabindex="-1" autofocus>
+  <dialog autofocus class="menu-dialog" id="page-menu" aria-label="Page navigation">
+    <div class="menu-panel" tabindex="-1">
       <button class="menu-toggle close-menu" aria-label="Close menu">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
       <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#judges" hidden>Judges</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
     </div>
   </dialog>
-  <dialog class="menu-dialog price-dialog" aria-label="Registration price">
-    <div class="menu-panel" tabindex="-1" autofocus>
+  <dialog autofocus class="menu-dialog price-dialog" aria-label="Registration price">
+    <div class="menu-panel" tabindex="-1">
     <button class="menu-toggle close-price">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
     </div>
   </dialog>
-  <dialog class="menu-dialog format-dialog" id="format-popup" aria-label="Competition format">
-    <div class="menu-panel format-panel" tabindex="-1" autofocus>
+  <dialog autofocus class="menu-dialog format-dialog" id="format-popup" aria-label="Competition format">
+    <div class="menu-panel format-panel" tabindex="-1">
       <div class="format-panel-header"><button class="menu-toggle close-format" aria-label="Close competition format">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button></div>
       <div class="format-panel-content" tabindex="0" role="region" aria-label="Competition rules">
         <ol class="format-rules">

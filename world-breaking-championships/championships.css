@@ -124,7 +124,6 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .judge-card{position:absolute;left:0;top:calc(107 * var(--judges-unit));width:calc(240 * var(--judges-unit));height:calc(320 * var(--judges-unit));margin:0;outline:none;will-change:transform;cursor:default}
 .judge-artwork{position:absolute;inset:0;overflow:hidden;background:#2b2b2b;border-radius:calc(4 * var(--judges-unit));transform:scale(calc(1 + .666666667 * var(--judge-expansion,0)),calc(1 + .66875 * var(--judge-expansion,0)));will-change:transform}
 .judge-artwork img{position:absolute;top:0;left:50%;transform:translateX(-50%);display:block;max-width:none;width:106.666667%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
-.judge-card:focus-visible .judge-artwork{outline:2px solid white;outline-offset:6px}
 .judge-caption{position:absolute;top:calc(360 * var(--judges-unit));left:50%;width:calc(440 * var(--judges-unit));transform:translate(-50%,calc((16 + 91 * var(--judge-expansion,0)) * var(--judges-unit)));text-align:center;opacity:var(--judge-expansion,0);visibility:hidden;pointer-events:none;letter-spacing:-.04em;will-change:transform,opacity}
 .judge-crew{font-size:calc(14 * var(--judges-unit));line-height:1.4;color:#fa4f1f}
 .judge-name{margin-top:calc(6 * var(--judges-unit));font-size:calc(32 * var(--judges-unit));line-height:1.1;color:white}

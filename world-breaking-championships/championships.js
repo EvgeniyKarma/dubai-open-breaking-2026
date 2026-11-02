@@ -332,9 +332,7 @@ let judgesScale = 1;
 let judgesTravel = 0;
 let judgesCenter = 0;
 let judgesActive = null;
-let judgesHovered = null;
-let judgesFocused = null;
-// Each card retains its current expansion through interrupted hover changes.
+// Each card retains its current expansion while the centered selection changes.
 // The same value controls its scale and the space it adds around its neighbors.
 const judgesExpansions = judgeCards.map(() => 0);
 const judgeCaptions = judgeCards.map(card => card.querySelector('.judge-caption'));
@@ -351,64 +349,41 @@ function measureJudges() {
   requestJudgesFrame();
 }
 
-function updateActiveJudge() {
-  const next = judgesHovered || judgesFocused;
-  if (next === judgesActive) return;
-  judgesActive = next;
-  judgeCards.forEach(card => card.classList.toggle('is-active', card === next));
-  requestJudgesFrame();
-}
-judgeCards.forEach(card => {
-  card.addEventListener('pointerenter', event => {
-    if (event.pointerType === 'touch') return;
-    judgesHovered = card;
-    updateActiveJudge();
-  });
-  card.addEventListener('pointerleave', () => {
-    if (judgesHovered === card) judgesHovered = null;
-    updateActiveJudge();
-  });
-  card.addEventListener('focus', () => {
-    judgesFocused = card.matches(':focus-visible') ? card : null;
-    updateActiveJudge();
-  });
-  card.addEventListener('blur', () => {
-    judgesFocused = null;
-    updateActiveJudge();
-  });
-});
 function renderJudges(time) {
   judgesFrame = 0;
   const elapsed = judgesLastTime ? Math.min((time - judgesLastTime) / 1000, .05) : 0;
   judgesLastTime = time;
   const reduced = judgesReducedMotion.matches;
   const blend = reduced ? 1 : 1 - Math.exp(-elapsed * 10);
+  const progress = Math.min(Math.max((activeDialog ? lockedY : window.scrollY) - judgesStart, 0), judgesTravel);
+  const step = 340 * judgesScale;
+  const position = step ? progress / step : 0;
+  judgesActive = judgeCards[Math.min(Math.round(position), judgeCards.length - 1)];
   let settling = false;
   judgeCards.forEach((card, index) => {
     const target = card === judgesActive ? 1 : 0;
+    card.classList.toggle('is-active', card === judgesActive);
     const value = judgesExpansions[index] + (target - judgesExpansions[index]) * blend;
     judgesExpansions[index] = Math.abs(target - value) < .0001 ? target : value;
     settling ||= judgesExpansions[index] !== target;
   });
-  const progress = Math.min(Math.max((activeDialog ? lockedY : window.scrollY) - judgesStart, 0), judgesTravel);
   const positions = judgeCards.map((_, index) => judgesCenter + index * 340 * judgesScale - progress);
   const shiftAt = index => positions.reduce((sum, x, other) => other === index ? sum :
     sum + Math.sign(positions[index] - x) * 80 * judgesScale * judgesExpansions[other], 0);
-  // A continuous anchor correction keeps the first/last card centered at each
-  // endpoint without introducing a jump when scrolling begins or ends on hover.
-  const fraction = judgesTravel ? progress / judgesTravel : 0;
-  const anchorShift = shiftAt(0) * (1 - fraction) + shiftAt(judgeCards.length - 1) * fraction;
+  // Interpolate between neighboring centers, keeping both movement and scale
+  // continuous while each settled card lands exactly in the viewport center.
+  const left = Math.floor(position);
+  const right = Math.min(left + 1, judgeCards.length - 1);
+  const fraction = position - left;
+  const anchorShift = shiftAt(left) * (1 - fraction) + shiftAt(right) * fraction;
   judgeCards.forEach((card, index) => {
-    // Contributions from both the outgoing and incoming cards interpolate
-    // together. Switching hover never replaces an already expanded offset.
+    // The outgoing and incoming cards share their space throughout the transition.
     const x = positions[index] + shiftAt(index) - anchorShift;
     const expansion = judgesExpansions[index];
     card.style.transform = `translate3d(${x}px,0,0)`;
     card.style.setProperty('--judge-expansion', expansion);
     card.style.zIndex = card === judgesActive ? 3 : expansion > 0 ? 2 : 1;
     judgeCaptions[index].style.visibility = expansion > .001 ? 'visible' : 'hidden';
-    // Keep keyboard focus in the visible part of the moving gallery.
-    card.tabIndex = x >= 0 && x + 240 * judgesScale <= judges.clientWidth ? 0 : -1;
   });
   if (judgesVisible && !document.hidden && judgesDesktop.matches && settling) requestJudgesFrame();
   else judgesLastTime = 0;
@@ -440,3 +415,65 @@ judgesReducedMotion.addEventListener('change', requestJudgesFrame);
 new ResizeObserver(measureJudges).observe(schedule);
 document.fonts.ready.then(measureJudges);
 measureJudges();
+
+// One wheel/trackpad gesture selects one card. Momentum events belong to the
+// same gesture; outside this pinned section the browser scrolls normally.
+let judgesGestureLocked = false;
+let judgesGestureTimer;
+let judgesGestureTarget = 0;
+let judgesGestureStarted = 0;
+function releaseJudgesGesture() {
+  if (Math.abs(window.scrollY - judgesGestureTarget) > 1 && Date.now() - judgesGestureStarted < 800) {
+    judgesGestureTimer = setTimeout(releaseJudgesGesture, 50);
+    return;
+  }
+  judgesGestureLocked = false;
+}
+function settleJudge(index) {
+  judgesGestureTarget = judgesStart + Math.max(0, Math.min(index, judgeCards.length - 1)) * 340 * judgesScale;
+  judgesGestureStarted = Date.now();
+  judgesGestureLocked = true;
+  clearTimeout(judgesGestureTimer);
+  judgesGestureTimer = setTimeout(releaseJudgesGesture, 240);
+  window.scrollTo({top:judgesGestureTarget, behavior:judgesReducedMotion.matches ? 'instant' : 'smooth'});
+}
+window.addEventListener('wheel', event => {
+  if (!judgesDesktop.matches || activeDialog || event.ctrlKey || !event.cancelable || !event.deltaY) return;
+  const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+  const y = window.scrollY;
+  const end = judgesStart + judgesTravel;
+  const inside = y >= judgesStart - 1 && y <= end + 1;
+  if (inside && judgesGestureLocked) {
+    event.preventDefault();
+    clearTimeout(judgesGestureTimer);
+    judgesGestureTimer = setTimeout(releaseJudgesGesture, 240);
+    return;
+  }
+  // Land on the first/last card when a normal page scroll enters the section.
+  if (y < judgesStart - 1 && delta > 0 && y + delta >= judgesStart) {
+    event.preventDefault();
+    settleJudge(0);
+    return;
+  }
+  if (y > end + 1 && delta < 0 && y + delta <= end) {
+    event.preventDefault();
+    settleJudge(judgeCards.length - 1);
+    return;
+  }
+  if (!inside || (y <= judgesStart + 1 && delta < 0) || (y >= end - 1 && delta > 0)) return;
+  event.preventDefault();
+  const index = Math.round((y - judgesStart) / (340 * judgesScale));
+  settleJudge(index + Math.sign(delta));
+}, {passive:false});
+window.addEventListener('keydown', event => {
+  if (!judgesDesktop.matches || activeDialog || event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
+  if (event.target.closest('button,a,input,textarea,select,[contenteditable]')) return;
+  const direction = ['ArrowDown','PageDown'].includes(event.key) || (event.key === ' ' && !event.shiftKey) ? 1 :
+    ['ArrowUp','PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey) ? -1 : 0;
+  if (!direction) return;
+  const y = window.scrollY;
+  const end = judgesStart + judgesTravel;
+  if (y < judgesStart - 1 || y > end + 1 || (y <= judgesStart + 1 && direction < 0) || (y >= end - 1 && direction > 0)) return;
+  event.preventDefault();
+  if (!judgesGestureLocked) settleJudge(Math.round((y - judgesStart) / (340 * judgesScale)) + direction);
+});

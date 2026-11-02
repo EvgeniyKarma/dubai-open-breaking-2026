@@ -316,9 +316,10 @@ document.fonts.ready.then(() => {
   syncScheduleLayout();
 });
 
-// A single set of nine cards wraps outside the clipped section: no duplicate
-// focus targets and no reset at the seam between the final and first judge.
+// A finite nine-card track follows native vertical scrolling. CSS sticky pins
+// the scene for exactly the distance from the first centered card to the last.
 const judges = document.querySelector('.judges');
+const judgesStage = judges.querySelector('.judges-stage');
 const judgeTitle = document.querySelector('#judges-title');
 const judgeCards = [...judges.querySelectorAll('.judge-card')];
 const judgesDesktop = matchMedia('(min-width:1201px)');
@@ -326,14 +327,29 @@ const judgesReducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
 let judgesVisible = false;
 let judgesFrame = 0;
 let judgesLastTime = 0;
-let judgesOffset = 840;
+let judgesStart = 0;
+let judgesScale = 1;
+let judgesTravel = 0;
+let judgesCenter = 0;
 let judgesActive = null;
 let judgesHovered = null;
 let judgesFocused = null;
 // Each card retains its current expansion through interrupted hover changes.
 // The same value controls its scale and the space it adds around its neighbors.
 const judgesExpansions = judgeCards.map(() => 0);
-let judgesSpeed = 18;
+const judgeCaptions = judgeCards.map(card => card.querySelector('.judge-caption'));
+
+function measureJudges() {
+  if (!judgesDesktop.matches) return;
+  // Read the rendered fluid width: it also fits shorter desktop viewports.
+  judgesScale = judgeCards[0].getBoundingClientRect().width / 240;
+  judgesTravel = (judgeCards.length - 1) * 340 * judgesScale;
+  judgesCenter = judges.clientWidth / 2 - 120 * judgesScale;
+  const pinnedTop = parseFloat(getComputedStyle(judgesStage).top);
+  judgesStart = judges.getBoundingClientRect().top + (activeDialog ? lockedY : window.scrollY) - pinnedTop;
+  judges.style.setProperty('--judges-travel', `${judgesTravel}px`);
+  requestJudgesFrame();
+}
 
 function updateActiveJudge() {
   const next = judgesHovered || judgesFocused;
@@ -374,29 +390,28 @@ function renderJudges(time) {
     judgesExpansions[index] = Math.abs(target - value) < .0001 ? target : value;
     settling ||= judgesExpansions[index] !== target;
   });
-  const targetSpeed = judgesActive || activeDialog || reduced ? 0 : 18;
-  // Stop immediately under the pointer; ease back into the drift on mouse exit.
-  judgesSpeed = targetSpeed === 0 ? 0 : judgesSpeed + (targetSpeed - judgesSpeed) * blend;
-  if (judgesVisible && !document.hidden) judgesOffset = (judgesOffset + elapsed * judgesSpeed) % (judgeCards.length * 340);
-  const scale = judges.clientWidth / 1920;
-  const loop = judgeCards.length * 340;
-  const wrap = value => ((value + 340) % loop + loop) % loop - 340;
-  const positions = judgeCards.map((_, index) => wrap(index * 340 + judgesOffset));
+  const progress = Math.min(Math.max((activeDialog ? lockedY : window.scrollY) - judgesStart, 0), judgesTravel);
+  const positions = judgeCards.map((_, index) => judgesCenter + index * 340 * judgesScale - progress);
+  const shiftAt = index => positions.reduce((sum, x, other) => other === index ? sum :
+    sum + Math.sign(positions[index] - x) * 80 * judgesScale * judgesExpansions[other], 0);
+  // A continuous anchor correction keeps the first/last card centered at each
+  // endpoint without introducing a jump when scrolling begins or ends on hover.
+  const fraction = judgesTravel ? progress / judgesTravel : 0;
+  const anchorShift = shiftAt(0) * (1 - fraction) + shiftAt(judgeCards.length - 1) * fraction;
   judgeCards.forEach((card, index) => {
     // Contributions from both the outgoing and incoming cards interpolate
     // together. Switching hover never replaces an already expanded offset.
-    const shift = positions.reduce((sum, x, other) => other === index ? sum :
-      sum + Math.sign(positions[index] - x) * 80 * judgesExpansions[other], 0);
-    const x = positions[index] + shift;
+    const x = positions[index] + shiftAt(index) - anchorShift;
     const expansion = judgesExpansions[index];
-    card.style.transform = `translate3d(${x * scale}px,0,0)`;
+    card.style.transform = `translate3d(${x}px,0,0)`;
     card.style.setProperty('--judge-expansion', expansion);
     card.style.zIndex = card === judgesActive ? 3 : expansion > 0 ? 2 : 1;
-    card.querySelector('.judge-caption').style.visibility = expansion > .001 ? 'visible' : 'hidden';
+    judgeCaptions[index].style.visibility = expansion > .001 ? 'visible' : 'hidden';
     // Keep keyboard focus in the visible part of the moving gallery.
-    card.tabIndex = x >= 0 && x + 240 <= 1920 ? 0 : -1;
+    card.tabIndex = x >= 0 && x + 240 * judgesScale <= judges.clientWidth ? 0 : -1;
   });
-  if (judgesVisible && !document.hidden && judgesDesktop.matches && (!reduced || settling)) requestJudgesFrame();
+  if (judgesVisible && !document.hidden && judgesDesktop.matches && settling) requestJudgesFrame();
+  else judgesLastTime = 0;
 }
 function requestJudgesFrame() {
   if (!judgesFrame) judgesFrame = requestAnimationFrame(renderJudges);
@@ -406,7 +421,7 @@ const judgesObserver = new IntersectionObserver(entries => {
   judgesLastTime = 0;
   if (judgesVisible) requestJudgesFrame();
 }, {threshold:0});
-judgesObserver.observe(judges);
+judgesObserver.observe(judgesStage);
 const judgesTitleObserver = new IntersectionObserver(entries => {
   if (!entries[0].isIntersecting) return;
   judgeTitle.classList.add('is-ready');
@@ -416,8 +431,12 @@ document.fonts.ready.then(() => {
   splitLetters(judgeTitle, {reveal:true});
   judgesTitleObserver.observe(judgeTitle);
 });
-window.addEventListener('resize', requestJudgesFrame, {passive:true});
+window.addEventListener('scroll', requestJudgesFrame, {passive:true});
+window.addEventListener('resize', measureJudges, {passive:true});
 document.addEventListener('visibilitychange', () => {judgesLastTime = 0; requestJudgesFrame();});
-judgesDesktop.addEventListener('change', requestJudgesFrame);
+judgesDesktop.addEventListener('change', measureJudges);
 judgesReducedMotion.addEventListener('change', requestJudgesFrame);
-requestJudgesFrame();
+// Schedule text wrapping can change the section's document offset on font load.
+new ResizeObserver(measureJudges).observe(schedule);
+document.fonts.ready.then(measureJudges);
+measureJudges();

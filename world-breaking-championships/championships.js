@@ -2,6 +2,7 @@ const hero = document.querySelector('.hero');
 const header = document.querySelector('.sticky-header');
 const menu = document.querySelector('#page-menu');
 const price = document.querySelector('.price-dialog');
+const formatPopup = document.querySelector('#format-popup');
 const toggles = document.querySelectorAll('[aria-controls="page-menu"]');
 const compact = matchMedia('(max-width:1200px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
@@ -42,6 +43,8 @@ function openDialog(dialog, trigger) {
   document.body.style.top = `-${lockedY}px`;
   document.body.style.width = '100%';
   document.body.style.paddingRight = `${scrollbarWidth}px`;
+  const scrollContent = dialog.querySelector('.format-panel-content');
+  if (scrollContent) scrollContent.scrollTop = 0;
   dialog.showModal();
   dialog.querySelector('.menu-panel').focus({ preventScroll: true });
   dialog.classList.add('is-open', 'has-opened');
@@ -50,6 +53,7 @@ function openDialog(dialog, trigger) {
   // A CSS transition may skip its initial state when the dialog was display:none.
   if (!reducedMotion.matches) animatePanel(panel, -panel.offsetWidth, 0);
   toggles.forEach(button => button.setAttribute('aria-expanded', String(dialog === menu)));
+  if (dialog.id) document.querySelectorAll(`[aria-controls="${dialog.id}"]`).forEach(button => button.setAttribute('aria-expanded', 'true'));
 }
 function animatePanel(panel, from, to, onFinish) {
   const animation = panel.animate([{ right: `${from}px` }, { right: `${to}px` }], {
@@ -84,6 +88,7 @@ function afterClose(event) {
   closing = false;
   window.scrollTo(0, lockedY);
   toggles.forEach(button => button.setAttribute('aria-expanded', 'false'));
+  if (event.target.id) document.querySelectorAll(`[aria-controls="${event.target.id}"]`).forEach(button => button.setAttribute('aria-expanded', 'false'));
   updateHeader();
   opener?.focus({ preventScroll: true });
   if (navigationTarget) {
@@ -98,7 +103,9 @@ toggles.forEach(button => button.addEventListener('click', () => openDialog(menu
 document.querySelector('.close-menu').addEventListener('click', () => closeDialog(menu));
 document.querySelector('[data-open-price]').addEventListener('click', event => openDialog(price, event.currentTarget));
 document.querySelector('.close-price').addEventListener('click', () => closeDialog(price));
-for (const dialog of [menu, price]) {
+document.querySelector('.format-learn').addEventListener('click', event => openDialog(formatPopup, event.currentTarget));
+document.querySelector('.close-format').addEventListener('click', () => closeDialog(formatPopup));
+for (const dialog of [menu, price, formatPopup]) {
   dialog.addEventListener('click', event => { if (event.target === dialog) closeDialog(dialog); });
   dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
   dialog.addEventListener('close', afterClose);
@@ -481,3 +488,29 @@ window.addEventListener('keydown', event => {
 });
 
 }
+
+// Keep word wrapping responsive while sharing the existing per-letter masks.
+const formatTitle = document.querySelector('#format-title');
+const formatTitleObserver = new IntersectionObserver(entries => {
+  if (!entries[0].isIntersecting) return;
+  formatTitle.classList.add('is-ready');
+  formatTitleObserver.disconnect();
+}, {rootMargin:'0px 0px -15% 0px'});
+document.fonts.ready.then(() => {
+  const label = formatTitle.textContent.trim();
+  formatTitle.setAttribute('aria-label', label);
+  const fragment = document.createDocumentFragment();
+  label.split(/\s+/).forEach((word, index) => {
+    if (index) fragment.append(document.createTextNode(' '));
+    const span = document.createElement('span');
+    span.className = 'format-word';
+    span.textContent = word;
+    splitLetters(span, {reveal:true});
+    span.setAttribute('aria-hidden', 'true');
+    fragment.append(span);
+  });
+  formatTitle.replaceChildren(fragment);
+  formatTitle.querySelectorAll('.letter-mask').forEach((mask, index) => mask.style.setProperty('--letter-index', index));
+  formatTitle.classList.add('is-prepared');
+  formatTitleObserver.observe(formatTitle);
+});

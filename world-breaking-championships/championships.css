@@ -132,3 +132,29 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 
 /* Temporarily shelved until the Judges interaction is revisited. */
 .judges[hidden],a[href="#judges"][hidden]{display:none}
+
+/* Competition format: viewport-height scene beneath the fixed header. */
+.competition-format{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;height:calc(var(--viewport-height) - var(--header-height));overflow:hidden;background:#111;scroll-margin-top:var(--header-height)}
+.format-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 68.66%;opacity:.7;z-index:-1;pointer-events:none}
+.format-copy{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;padding:16px var(--inset)}
+.format-title{margin:0 0 24px;font-size:calc(150 * 100vw / 1920);font-weight:400;line-height:1;letter-spacing:-.06em;white-space:nowrap}
+.format-word{display:inline-block;white-space:nowrap}
+.js .format-title{visibility:hidden}.js .format-title.is-prepared{visibility:visible}.js .format-title .reveal-letter{transform:translateY(120%)}
+.format-description{width:553px;max-width:100%;font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.04em}
+.format-learn{margin-top:32px;background:white;height:48px;min-width:0;padding:4px 4px 4px 24px;font-size:16px;gap:12px}
+.format-learn .menu-icon{width:40px;height:40px}.format-learn .menu-icon::before{width:24px;height:24px;mask-image:url(../assets/arrow-right-light.svg);-webkit-mask-image:url(../assets/arrow-right-light.svg)}
+/* The Close row never scrolls; the content below it is the only scrollport. */
+.format-panel{align-items:stretch;gap:0;padding:0;overflow:hidden}
+.format-panel-header{display:flex;justify-content:flex-end;flex:none;padding:16px 24px 0;background:white}
+.format-panel-content{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:80px 24px;outline:none}
+.format-panel-content:focus-visible{outline:2px solid #111;outline-offset:-4px}
+.format-rules{display:flex;flex-direction:column;gap:24px;counter-reset:format-rule;list-style:none;margin:0;padding:0;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
+.format-rules>li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:24px;counter-increment:format-rule}
+.format-rules>li::before{content:counter(format-rule);display:grid;place-items:center;width:18px;height:18px;border-radius:4px;background:#111;color:white;font-size:10px;line-height:1.4;letter-spacing:-.04em}
+.format-rule-table{display:flex;flex-direction:column;gap:24px;min-width:0}.format-rule-table h3{font:inherit;margin:0}
+.format-rule-table table{width:100%;table-layout:fixed;border-collapse:collapse;font:inherit;text-align:left}
+.format-rule-table th,.format-rule-table td{width:50%;padding:12px 0;vertical-align:top;border-top:1px solid #111;font-weight:400}
+.format-rule-table th{padding-right:12px}.format-rule-table td{padding-left:12px}.format-rule-table tr:last-child>*{padding-bottom:0}
+@media(max-width:1200px){.format-title{font-size:min(calc(150 * 100vw / 1024),calc((var(--viewport-height) - var(--header-height) - 180px) / 2));white-space:normal;max-width:100%}.format-photo{object-position:50% 100%}}
+@media(max-width:600px){.format-title{font-size:min(calc(70 * 100vw / 440),calc((var(--viewport-height) - var(--header-height) - 202px) / 2))}.format-description{width:380px}.format-photo{height:104.72%;object-position:79.1% 0}.format-panel-header{padding-top:max(16px,env(safe-area-inset-top))}.format-panel-content{padding-top:60px;padding-bottom:max(60px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.js .format-title .reveal-letter{transform:none}}

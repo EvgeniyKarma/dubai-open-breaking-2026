@@ -129,3 +129,6 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .judge-name{margin-top:calc(6 * var(--judges-unit));font-size:calc(32 * var(--judges-unit));line-height:1.1;color:white}
 @media(max-width:1200px){.judges{display:none}}
 @media(prefers-reduced-motion:reduce){.js #judges-title .reveal-letter{transform:none}}
+
+/* Temporarily shelved until the Judges interaction is revisited. */
+.judges[hidden],a[href="#judges"][hidden]{display:none}

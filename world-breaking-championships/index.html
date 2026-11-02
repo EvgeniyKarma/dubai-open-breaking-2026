@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261102-judges-steps">
-  <script src="championships.js?v=20261102-judges-steps" defer></script>
+  <link rel="stylesheet" href="championships.css?v=20261102-judges-hidden">
+  <script src="championships.js?v=20261102-judges-hidden" defer></script>
 </head>
 <body>
   <main>
@@ -20,7 +20,7 @@
         <p class="event-date">19–20<br>December<br>2026</p>
         <a class="brand" href="../" aria-label="Dubai Open Breaking home"><img src="../Logo.png" width="100" height="100" alt="Dubai Open Breaking 2026"></a>
         <nav class="hero-nav" aria-label="Page sections">
-          <a href="#schedule">Schedule</a><a href="#judges">Judges</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a>
+          <a href="#schedule">Schedule</a><a href="#judges" hidden>Judges</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a>
         </nav>
         <button class="menu-toggle hero-toggle" aria-haspopup="dialog" aria-controls="page-menu" aria-expanded="false">Menu<span class="menu-icon" aria-hidden="true"></span></button>
       </header>
@@ -121,7 +121,7 @@
         </article>
       </div>
     </section>
-    <section class="judges" id="judges" aria-labelledby="judges-title">
+    <section class="judges" hidden id="judges" aria-labelledby="judges-title">
       <div class="judges-stage">
         <div class="judges-scene">
       <h2 id="judges-title">Judges</h2>
@@ -176,7 +176,7 @@
   <dialog class="menu-dialog" id="page-menu" aria-label="Page navigation">
     <div class="menu-panel" tabindex="-1" autofocus>
       <button class="menu-toggle close-menu" aria-label="Close menu">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
-      <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#judges">Judges</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
+      <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#judges" hidden>Judges</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
     </div>
   </dialog>
   <dialog class="menu-dialog price-dialog" aria-label="Registration price">

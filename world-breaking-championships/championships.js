@@ -319,6 +319,8 @@ document.fonts.ready.then(() => {
 // A finite nine-card track follows native vertical scrolling. CSS sticky pins
 // the scene for exactly the distance from the first centered card to the last.
 const judges = document.querySelector('.judges');
+// Keep this unfinished section available in source without activating its scroll handlers.
+if (judges && !judges.hidden) {
 const judgesStage = judges.querySelector('.judges-stage');
 const judgeTitle = document.querySelector('#judges-title');
 const judgeCards = [...judges.querySelectorAll('.judge-card')];
@@ -477,3 +479,5 @@ window.addEventListener('keydown', event => {
   event.preventDefault();
   if (!judgesGestureLocked) settleJudge(Math.round((y - judgesStart) / (340 * judgesScale)) + direction);
 });
+
+}

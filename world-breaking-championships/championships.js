@@ -533,3 +533,33 @@ document.fonts.ready.then(() => {
   formatTitle.classList.add('is-prepared');
   formatTitleObserver.observe(formatTitle);
 });
+
+// The photo travels at 95.5% of the section's native scroll speed.
+const formatSection = document.querySelector('.competition-format');
+const formatPhoto = formatSection.querySelector('.format-photo');
+let formatPhotoVisible = false;
+let formatPhotoFrame = 0;
+function updateFormatParallax() {
+  formatPhotoFrame = 0;
+  if (reducedMotion.matches) {
+    formatPhoto.style.setProperty('--format-parallax', '0px');
+    return;
+  }
+  if (!formatPhotoVisible || activeDialog) return;
+  const box = formatSection.getBoundingClientRect();
+  const limit = box.height * .055;
+  const offset = Math.max(-limit, Math.min(limit, (header.offsetHeight - box.top) * .045));
+  formatPhoto.style.setProperty('--format-parallax', `${offset}px`);
+}
+function queueFormatParallax() {
+  if (!formatPhotoFrame) formatPhotoFrame = requestAnimationFrame(updateFormatParallax);
+}
+new IntersectionObserver(entries => {
+  formatPhotoVisible = entries[0].isIntersecting;
+  if (formatPhotoVisible) queueFormatParallax();
+}).observe(formatSection);
+window.addEventListener('scroll', () => {
+  if (formatPhotoVisible) queueFormatParallax();
+}, {passive:true});
+window.addEventListener('resize', queueFormatParallax, {passive:true});
+reducedMotion.addEventListener('change', queueFormatParallax);

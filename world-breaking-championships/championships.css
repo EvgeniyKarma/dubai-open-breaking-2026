@@ -120,13 +120,10 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .js #judges-title.is-ready .reveal-letter{animation:letter-reveal .85s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.15s + var(--letter-index) * .027s)}
 .judges-gallery{position:absolute;top:calc(244 * var(--judges-unit));left:0;width:100%;height:calc(635 * var(--judges-unit))}
 .judge-card{position:absolute;left:0;top:calc(107 * var(--judges-unit));width:calc(240 * var(--judges-unit));height:calc(320 * var(--judges-unit));margin:0;outline:none;will-change:transform;cursor:default}
-.judge-artwork{position:absolute;inset:0;overflow:hidden;background:#2b2b2b;border-radius:calc(4 * var(--judges-unit));transition:inset .55s cubic-bezier(.65,0,.35,1)}
+.judge-artwork{position:absolute;inset:0;overflow:hidden;background:#2b2b2b;border-radius:calc(4 * var(--judges-unit));transform:scale(calc(1 + .666666667 * var(--judge-expansion,0)),calc(1 + .66875 * var(--judge-expansion,0)));will-change:transform}
 .judge-artwork img{position:absolute;top:0;left:50%;transform:translateX(-50%);display:block;max-width:none;width:106.666667%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
-.judge-card.is-active{z-index:2}
-.judge-card.is-active .judge-artwork{inset:calc(-107 * var(--judges-unit)) calc(-80 * var(--judges-unit))}
 .judge-card:focus-visible .judge-artwork{outline:2px solid white;outline-offset:6px}
-.judge-caption{position:absolute;top:calc(360 * var(--judges-unit));left:50%;width:calc(440 * var(--judges-unit));transform:translate(-50%,calc(16 * var(--judges-unit)));text-align:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease-in-out,transform .55s cubic-bezier(.65,0,.35,1),top .55s cubic-bezier(.65,0,.35,1),visibility .55s;letter-spacing:-.04em}
-.judge-card.is-active .judge-caption{top:calc(467 * var(--judges-unit));transform:translate(-50%,0);opacity:1;visibility:visible;transition-delay:.1s,0s,0s,0s}
+.judge-caption{position:absolute;top:calc(360 * var(--judges-unit));left:50%;width:calc(440 * var(--judges-unit));transform:translate(-50%,calc((16 + 91 * var(--judge-expansion,0)) * var(--judges-unit)));text-align:center;opacity:var(--judge-expansion,0);visibility:hidden;pointer-events:none;letter-spacing:-.04em;will-change:transform,opacity}
 .judge-crew{font-size:calc(14 * var(--judges-unit));line-height:1.4;color:#fa4f1f}
 .judge-name{margin-top:calc(6 * var(--judges-unit));font-size:calc(32 * var(--judges-unit));line-height:1.1;color:white}
 @media(max-width:1200px){.judges{display:none}}

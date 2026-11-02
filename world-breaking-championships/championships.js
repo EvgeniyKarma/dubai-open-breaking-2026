@@ -330,14 +330,15 @@ let judgesOffset = 840;
 let judgesActive = null;
 let judgesHovered = null;
 let judgesFocused = null;
-let judgesExpansion = 0;
-let judgesSpreadIndex = -1;
+// Each card retains its current expansion through interrupted hover changes.
+// The same value controls its scale and the space it adds around its neighbors.
+const judgesExpansions = judgeCards.map(() => 0);
+let judgesSpeed = 18;
 
 function updateActiveJudge() {
   const next = judgesHovered || judgesFocused;
   if (next === judgesActive) return;
   judgesActive = next;
-  if (next) judgesSpreadIndex = judgeCards.indexOf(next);
   judgeCards.forEach(card => card.classList.toggle('is-active', card === next));
   requestJudgesFrame();
 }
@@ -364,22 +365,38 @@ function renderJudges(time) {
   judgesFrame = 0;
   const elapsed = judgesLastTime ? Math.min((time - judgesLastTime) / 1000, .05) : 0;
   judgesLastTime = time;
-  const target = judgesActive ? 1 : 0;
-  judgesExpansion = judgesReducedMotion.matches ? target : judgesExpansion + (target - judgesExpansion) * (1 - Math.exp(-elapsed * 10));
-  if (Math.abs(target - judgesExpansion) < .001) judgesExpansion = target;
-  if (judgesVisible && !document.hidden && !activeDialog && !judgesActive && !judgesReducedMotion.matches) judgesOffset = (judgesOffset + elapsed * 18) % (judgeCards.length * 340);
+  const reduced = judgesReducedMotion.matches;
+  const blend = reduced ? 1 : 1 - Math.exp(-elapsed * 10);
+  let settling = false;
+  judgeCards.forEach((card, index) => {
+    const target = card === judgesActive ? 1 : 0;
+    const value = judgesExpansions[index] + (target - judgesExpansions[index]) * blend;
+    judgesExpansions[index] = Math.abs(target - value) < .0001 ? target : value;
+    settling ||= judgesExpansions[index] !== target;
+  });
+  const targetSpeed = judgesActive || activeDialog || reduced ? 0 : 18;
+  // Stop immediately under the pointer; ease back into the drift on mouse exit.
+  judgesSpeed = targetSpeed === 0 ? 0 : judgesSpeed + (targetSpeed - judgesSpeed) * blend;
+  if (judgesVisible && !document.hidden) judgesOffset = (judgesOffset + elapsed * judgesSpeed) % (judgeCards.length * 340);
   const scale = judges.clientWidth / 1920;
   const loop = judgeCards.length * 340;
   const wrap = value => ((value + 340) % loop + loop) % loop - 340;
-  const activeX = wrap(judgesSpreadIndex * 340 + judgesOffset);
+  const positions = judgeCards.map((_, index) => wrap(index * 340 + judgesOffset));
   judgeCards.forEach((card, index) => {
-    let x = wrap(index * 340 + judgesOffset);
-    if (judgesSpreadIndex >= 0 && index !== judgesSpreadIndex) x += (x < activeX ? -80 : 80) * judgesExpansion;
+    // Contributions from both the outgoing and incoming cards interpolate
+    // together. Switching hover never replaces an already expanded offset.
+    const shift = positions.reduce((sum, x, other) => other === index ? sum :
+      sum + Math.sign(positions[index] - x) * 80 * judgesExpansions[other], 0);
+    const x = positions[index] + shift;
+    const expansion = judgesExpansions[index];
     card.style.transform = `translate3d(${x * scale}px,0,0)`;
+    card.style.setProperty('--judge-expansion', expansion);
+    card.style.zIndex = card === judgesActive ? 3 : expansion > 0 ? 2 : 1;
+    card.querySelector('.judge-caption').style.visibility = expansion > .001 ? 'visible' : 'hidden';
     // Keep keyboard focus in the visible part of the moving gallery.
     card.tabIndex = x >= 0 && x + 240 <= 1920 ? 0 : -1;
   });
-  if (judgesVisible && !document.hidden && judgesDesktop.matches && (!judgesReducedMotion.matches || judgesExpansion !== target)) requestJudgesFrame();
+  if (judgesVisible && !document.hidden && judgesDesktop.matches && (!reduced || settling)) requestJudgesFrame();
 }
 function requestJudgesFrame() {
   if (!judgesFrame) judgesFrame = requestAnimationFrame(renderJudges);

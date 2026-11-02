@@ -259,7 +259,7 @@ function revealSchedule(replayVisible = false) {
   scheduleFrame = 0;
   if (!scheduleReady || activeDialog) return;
   const height = window.innerHeight;
-  // The current page ends here: reveal remaining visible content at its end,
+  // Reveal remaining visible content at the document end,
   // even when there is not enough space below to scroll it to screen center.
   const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
   for (const element of schedule.querySelectorAll('[data-schedule-text], .schedule-rule')) {
@@ -315,3 +315,92 @@ document.fonts.ready.then(() => {
   scheduleReady = true;
   syncScheduleLayout();
 });
+
+// A single set of nine cards wraps outside the clipped section: no duplicate
+// focus targets and no reset at the seam between the final and first judge.
+const judges = document.querySelector('.judges');
+const judgeTitle = document.querySelector('#judges-title');
+const judgeCards = [...judges.querySelectorAll('.judge-card')];
+const judgesDesktop = matchMedia('(min-width:1201px)');
+const judgesReducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
+let judgesVisible = false;
+let judgesFrame = 0;
+let judgesLastTime = 0;
+let judgesOffset = 840;
+let judgesActive = null;
+let judgesHovered = null;
+let judgesFocused = null;
+let judgesExpansion = 0;
+let judgesSpreadIndex = -1;
+
+function updateActiveJudge() {
+  const next = judgesHovered || judgesFocused;
+  if (next === judgesActive) return;
+  judgesActive = next;
+  if (next) judgesSpreadIndex = judgeCards.indexOf(next);
+  judgeCards.forEach(card => card.classList.toggle('is-active', card === next));
+  requestJudgesFrame();
+}
+judgeCards.forEach(card => {
+  card.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'touch') return;
+    judgesHovered = card;
+    updateActiveJudge();
+  });
+  card.addEventListener('pointerleave', () => {
+    if (judgesHovered === card) judgesHovered = null;
+    updateActiveJudge();
+  });
+  card.addEventListener('focus', () => {
+    judgesFocused = card.matches(':focus-visible') ? card : null;
+    updateActiveJudge();
+  });
+  card.addEventListener('blur', () => {
+    judgesFocused = null;
+    updateActiveJudge();
+  });
+});
+function renderJudges(time) {
+  judgesFrame = 0;
+  const elapsed = judgesLastTime ? Math.min((time - judgesLastTime) / 1000, .05) : 0;
+  judgesLastTime = time;
+  const target = judgesActive ? 1 : 0;
+  judgesExpansion = judgesReducedMotion.matches ? target : judgesExpansion + (target - judgesExpansion) * (1 - Math.exp(-elapsed * 10));
+  if (Math.abs(target - judgesExpansion) < .001) judgesExpansion = target;
+  if (judgesVisible && !document.hidden && !activeDialog && !judgesActive && !judgesReducedMotion.matches) judgesOffset = (judgesOffset + elapsed * 18) % (judgeCards.length * 340);
+  const scale = judges.clientWidth / 1920;
+  const loop = judgeCards.length * 340;
+  const wrap = value => ((value + 340) % loop + loop) % loop - 340;
+  const activeX = wrap(judgesSpreadIndex * 340 + judgesOffset);
+  judgeCards.forEach((card, index) => {
+    let x = wrap(index * 340 + judgesOffset);
+    if (judgesSpreadIndex >= 0 && index !== judgesSpreadIndex) x += (x < activeX ? -80 : 80) * judgesExpansion;
+    card.style.transform = `translate3d(${x * scale}px,0,0)`;
+    // Keep keyboard focus in the visible part of the moving gallery.
+    card.tabIndex = x >= 0 && x + 240 <= 1920 ? 0 : -1;
+  });
+  if (judgesVisible && !document.hidden && judgesDesktop.matches && (!judgesReducedMotion.matches || judgesExpansion !== target)) requestJudgesFrame();
+}
+function requestJudgesFrame() {
+  if (!judgesFrame) judgesFrame = requestAnimationFrame(renderJudges);
+}
+const judgesObserver = new IntersectionObserver(entries => {
+  judgesVisible = entries[0].isIntersecting;
+  judgesLastTime = 0;
+  if (judgesVisible) requestJudgesFrame();
+}, {threshold:0});
+judgesObserver.observe(judges);
+const judgesTitleObserver = new IntersectionObserver(entries => {
+  if (!entries[0].isIntersecting) return;
+  judgeTitle.classList.add('is-ready');
+  judgesTitleObserver.disconnect();
+}, {rootMargin:'0px 0px -15% 0px'});
+document.fonts.ready.then(() => {
+  splitLetters(judgeTitle, {reveal:true});
+  judgesTitleObserver.observe(judgeTitle);
+});
+window.addEventListener('resize', requestJudgesFrame, {passive:true});
+document.addEventListener('visibilitychange', () => {judgesLastTime = 0; requestJudgesFrame();});
+judgesDesktop.addEventListener('change', requestJudgesFrame);
+judgesReducedMotion.addEventListener('change', requestJudgesFrame);
+requestJudgesFrame();

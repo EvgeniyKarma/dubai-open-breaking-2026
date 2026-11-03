@@ -44,7 +44,6 @@ function openDialog(dialog, trigger) {
   document.body.style.width = '100%';
   document.body.style.paddingRight = `${scrollbarWidth}px`;
   const scrollContent = dialog.querySelector('.format-panel-content');
-  if (scrollContent) scrollContent.scrollTop = 0;
   const panel = dialog.querySelector('.menu-panel');
   // Keep the native dialog's autofocus on its stationary viewport, rather than
   // asking the browser to reveal a focusable panel that is still offscreen.
@@ -58,12 +57,14 @@ function openDialog(dialog, trigger) {
   dialog.classList.add('has-opened');
   // Commit the outside position before activating the open class or animation.
   panel.getBoundingClientRect();
+  if (scrollContent) scrollContent.scrollTop = 0;
   if (reducedMotion.matches) {
     panel.style.right = '0px';
     dialog.classList.add('is-open');
     panel.focus({preventScroll:true});
   } else requestAnimationFrame(() => {
     if (!dialog.open || closing || activeDialog !== dialog) return;
+    if (scrollContent) scrollContent.scrollTop = 0;
     dialog.classList.add('is-open');
     panel.style.right = '0px';
     animatePanel(panel, from, 0, () => {

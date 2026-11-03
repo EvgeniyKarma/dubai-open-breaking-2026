@@ -290,13 +290,13 @@ function revealSchedule(replayVisible = false) {
   if (!scheduleReady || activeDialog) return;
   const height = window.innerHeight;
   // Reveal remaining visible content at the document end,
-  // even when there is not enough space below to scroll it to screen center.
+  // even when there is not enough space below to scroll it to the line reveal threshold.
   const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
   for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule')) {
     if (element.classList.contains('is-revealed') || element.closest('[hidden]')) continue;
     const box = element.getBoundingClientRect();
     const isLine = element.classList.contains('schedule-rule');
-    const threshold = isLine ? height / 2 : height * .85;
+    const threshold = isLine ? Math.max(0, height - 200) : height * .85;
     if (box.top <= threshold || ((replayVisible || atPageEnd) && box.top < height)) element.classList.add('is-revealed');
   }
 }

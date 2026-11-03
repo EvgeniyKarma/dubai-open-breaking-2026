@@ -190,4 +190,9 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .prize-row dt,.prize-row dd{min-width:0;margin:0;font-weight:400}
 .prize-row dd{color:#fa4f1f}
 @media(max-width:1200px){.prize-money{--prize-unit:1px}.prize-money h2{font-size:100px}}
-@media(max-width:600px){.prize-money{padding:100px 16px}.prize-money h2{font-size:48px;margin-bottom:48px}.prize-category{display:block}.prize-category h3{font-size:32px;margin-bottom:32px}.prize-solo h3{font-size:30px}.prize-list{gap:16px;font-size:24px;line-height:1.1}}
+@media(max-width:600px){.prize-money{padding:100px 16px}.prize-money h2{font-size:48px;margin-bottom:48px}.prize-category{display:block}.prize-category h3{font-size:24px;margin-bottom:32px}.prize-list{gap:16px;font-size:18px;line-height:1.1}}
+
+/* Give tight display type room for glyph overhangs without changing line layout. */
+.prize-money .letter-mask,.format-title .letter-mask{padding:.2em .08em;margin:-.2em -.08em}
+.prize-money [data-schedule-text]{display:flow-root}
+.prize-money .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}

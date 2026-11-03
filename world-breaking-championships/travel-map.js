@@ -80,7 +80,11 @@ function selectCategory(tab, moveFocus=false) {
     item.tabIndex=selected?0:-1;
   }
   panel.setAttribute('aria-labelledby',tab.id);
-  for (const place of places) place.element.hidden=place.element.dataset.category==='hotels' && category!=='hotels';
+  let markerIndex=0;
+  for (const place of places) {
+    place.element.hidden=place.element.dataset.category==='hotels' && category!=='hotels';
+    if (!place.element.hidden) place.marker.style.setProperty('--marker-delay', `${markerIndex++ * 300}ms`);
+  }
   if (moveFocus) tab.focus({preventScroll:true});
   animate(startingView());
   // animate() commits the reset frame, so repeated category visits restart the reveal.

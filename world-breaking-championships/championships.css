@@ -279,5 +279,5 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .hotel-marker span{display:block;width:24px;height:24px;background:#111;mask:url(../assets/travel-guide/hotel-marker.svg) center/contain no-repeat;-webkit-mask:url(../assets/travel-guide/hotel-marker.svg) center/contain no-repeat}
 .travel-hotel .travel-tooltip h3{max-width:177px}
 
-.travel-markers.is-entering .travel-location:not([hidden]) .travel-marker{animation:map-marker-enter .55s ease-in-out both}
+.travel-markers.is-entering .travel-location:not([hidden]) .travel-marker{animation:map-marker-enter .55s ease-in-out both;animation-delay:var(--marker-delay,0ms)}
 @keyframes map-marker-enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}

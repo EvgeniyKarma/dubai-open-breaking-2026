@@ -6,7 +6,7 @@ class Element {
     this.name=name; this.events=new Map(); this.attributes={}; this.values=new Map(); this.classes=new Set();
     this.style={setProperty:(k,v)=>this.values.set(k,v)};
     this.classList={contains:c=>this.classes.has(c),add:c=>this.classes.add(c),remove:c=>this.classes.delete(c),toggle:(c,on)=>on?this.classes.add(c):this.classes.delete(c)};
-    this.capture=new Set(); this.offsetWidth=80; this.offsetHeight=80;
+    this.dataset={}; this.children=new Map(); this.capture=new Set(); this.offsetWidth=80; this.offsetHeight=80;
   }
   addEventListener(type,fn) { this.events.set(type,[...(this.events.get(type)||[]),fn]); }
   emit(type,event={}) { for(const fn of this.events.get(type)||[]) fn(event); }
@@ -14,7 +14,8 @@ class Element {
   closest() { return null; }
   matches() { return false; }
   contains(target) { return this===target; }
-  querySelector(selector) { return selector===':focus-visible'?null:elements.get(selector); }
+  querySelector(selector) { return selector===':focus-visible'?null:(this.children.get(selector)||elements.get(selector)); }
+  querySelectorAll(selector) { return selector==='.travel-location'?places:tabs; }
   hasPointerCapture(id) { return this.capture.has(id); }
   setPointerCapture(id) { this.capture.add(id); }
   releasePointerCapture(id) { this.capture.delete(id); }
@@ -34,6 +35,17 @@ const elements=new Map([
   ['.map-zoom-out',new Element('minus')],['.map-reset',new Element('reset')]
 ]);
 const map=elements.get('.travel-map'),marker=elements.get('.travel-marker'),location=elements.get('.travel-location');
+const places=[location];
+location.dataset={mapX:'0',mapY:'0'};
+for (const [name,x,y] of [['ibis',-247,106],['novotel',-115,203]]) {
+  const el=new Element(name),button=new Element(name+' marker'),tip=new Element(name+' tooltip');
+  el.dataset={mapX:String(x),mapY:String(y),category:'hotels'};el.hidden=true;el.classList.add('travel-hotel');
+  button.offsetWidth=40;button.offsetHeight=40;
+  el.children.set('.travel-marker',button);el.children.set('.travel-tooltip',tip);places.push(el);
+}
+const tabs=[new Element('venue tab'),new Element('hotels tab')];
+tabs[0].id='travel-venue-tab';tabs[1].id='travel-hotels-tab';
+elements.set('.travel-markers',new Element('panel'));
 const plus=elements.get('.map-zoom-in'),minus=elements.get('.map-zoom-out'),reset=elements.get('.map-reset');
 globalThis.window=new Element('window');
 globalThis.document=new Element('document');
@@ -74,5 +86,17 @@ document.emit('pointerdown',{target:map});assert.equal(location.classList.contai
 // Cancellation releases captures and leaves the next gesture usable.
 down(4,100,400);move(4,200,400);window.emit('pointercancel',pointer(4,200,400));
 assert.equal(map.capture.size,0);assert.equal(map.classList.contains('is-dragging'),false);
+// Category changes reset user pan; Hotels fits all markers on mobile.
+reset.emit('click');tabs[1].emit('click');
+assert.equal(tabs[1].attributes['aria-selected'],'true');assert.equal(places[1].hidden,false);
+assert.ok(value('--map-x')>0);
+const initialHotels=value('--map-x');
+down(5,100,400);move(5,160,400);up(5);assert.notEqual(value('--map-x'),initialHotels);
+tabs[1].emit('click');assert.equal(value('--map-x'),initialHotels);
+places[1].children.get('.travel-marker').emit('click');assert.equal(places[1].classList.contains('is-open'),true);
+marker.emit('click');assert.equal(places[1].classList.contains('is-open'),false);assert.equal(location.classList.contains('is-open'),true);
+reset.emit('click');assert.equal(value('--map-x'),0);assert.equal(value('--map-y'),0);assert.equal(value('--map-size'),2400);
+assert.equal(tabs[1].attributes['aria-selected'],'true');assert.equal(places[1].hidden,false);
+tabs[0].emit('click');assert.equal(places[1].hidden,true);assert.equal(value('--map-x'),0);
 Date.now=originalNow;
 console.log('Travel map gestures: touch pan, pinch, finger handoff, tap suppression, bounds and reset passed.');

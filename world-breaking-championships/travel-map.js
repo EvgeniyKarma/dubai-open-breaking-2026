@@ -1,10 +1,15 @@
-import {clamp, constrainMap, zoomMap} from './map-geometry.mjs?v=20261103-travel-map-controls';
+import {clamp, constrainMap, zoomMap, locationOffset, fitMapLocations} from './map-geometry.mjs?v=20261103-travel-hotels';
 
 const map = document.querySelector('.travel-map');
 const art = map.querySelector('.travel-map-art');
-const location = map.querySelector('.travel-location');
-const marker = map.querySelector('.travel-marker');
-const tooltip = map.querySelector('.travel-tooltip');
+const places = [...map.querySelectorAll('.travel-location')].map(element => ({
+  element, marker:element.querySelector('.travel-marker'), tooltip:element.querySelector('.travel-tooltip'),
+  point:{x:Number(element.dataset.mapX),y:Number(element.dataset.mapY)}
+}));
+const tabs = [...map.querySelectorAll('.travel-tab:not(:disabled)')];
+const panel = map.querySelector('.travel-markers');
+let category = 'venue';
+let activePlace = null;
 const plus = map.querySelector('.map-zoom-in');
 const minus = map.querySelector('.map-zoom-out');
 const reset = map.querySelector('.map-reset');
@@ -18,9 +23,10 @@ let closeTimer;
 let animationTimer;
 let suppressClickUntil = 0;
 
-function positionTooltip() {
-  const x = dimensions.width / 2 + state.x;
-  const y = dimensions.height / 2 + state.y;
+function positionTooltip(place) {
+  const {marker,tooltip,offset} = place;
+  const x = dimensions.width / 2 + offset.x;
+  const y = dimensions.height / 2 + offset.y;
   const top = clamp(y - marker.offsetHeight - 208, 16, Math.max(16, dimensions.height - 216)) - y;
   const left = clamp(x + 24, 12, Math.max(12, dimensions.width - 292)) - x;
   tooltip.style.setProperty('--tooltip-top', `${top}px`);
@@ -36,16 +42,60 @@ function render() {
   map.style.setProperty('--map-y', `${state.y}px`);
   plus.disabled = state.scale >= 1 - .00001;
   minus.disabled = state.scale <= Math.max(dimensions.width, dimensions.height) / dimensions.base + .00001;
-  positionTooltip();
+  for (const place of places) {
+    place.offset = locationOffset(place.point,state,dimensions.base);
+    place.element.style.setProperty('--location-x', `${place.offset.x}px`);
+    place.element.style.setProperty('--location-y', `${place.offset.y}px`);
+    positionTooltip(place);
+  }
 }
-function showTooltip(open) {
+function showTooltip(open, place=activePlace) {
   clearTimeout(closeTimer);
-  if (open && (moved && pointers.size)) return;
-  if (open) positionTooltip();
-  location.classList.toggle('is-open', open);
-  marker.setAttribute('aria-expanded', String(open));
-  tooltip.inert = !open;
+  if (open && (!place || place.element.hidden || (moved && pointers.size))) return;
+  for (const item of places) {
+    const visible=open && item===place;
+    item.element.classList.toggle('is-open', visible);
+    item.marker.setAttribute('aria-expanded', String(visible));
+    item.tooltip.inert = !visible;
+  }
+  activePlace=open?place:null;
+  if (open) positionTooltip(place);
 }
+function startingView() {
+  if (category !== 'hotels' || innerWidth > 600) return {scale:1,x:0,y:0};
+  return fitMapLocations(places.map(p=>({...p.point,
+    left:-p.marker.offsetWidth/2,right:p.marker.offsetWidth/2,
+    top:p.element.classList.contains('travel-hotel')?-20:-75,
+    bottom:p.element.classList.contains('travel-hotel')?20:6
+  })), dimensions);
+}
+function selectCategory(tab, moveFocus=false) {
+  if (pointers.size) endGesture();
+  category=tab.id==='travel-hotels-tab'?'hotels':'venue';
+  showTooltip(false);
+  for (const item of tabs) {
+    const selected=item===tab;
+    item.setAttribute('aria-selected',String(selected));
+    item.tabIndex=selected?0:-1;
+  }
+  panel.setAttribute('aria-labelledby',tab.id);
+  for (const place of places) place.element.hidden=place.element.dataset.category==='hotels' && category!=='hotels';
+  if (moveFocus) tab.focus({preventScroll:true});
+  animate(startingView());
+}
+tabs.forEach((tab,index)=>{
+  tab.addEventListener('click',()=>selectCategory(tab));
+  tab.addEventListener('keydown',event=>{
+    let next;
+    if (event.key==='ArrowRight') next=(index+1)%tabs.length;
+    if (event.key==='ArrowLeft') next=(index+tabs.length-1)%tabs.length;
+    if (event.key==='Home') next=0;
+    if (event.key==='End') next=tabs.length-1;
+    if (next===undefined) return;
+    event.preventDefault();
+    selectCategory(tabs[next],true);
+  });
+});
 function interruptAnimation() {
   clearTimeout(animationTimer);
   if (map.classList.contains('is-animating')) {
@@ -72,8 +122,10 @@ function resize() {
   if (pointers.size) endGesture();
   interruptAnimation();
   const frame = map.getBoundingClientRect();
+  const widthChanged=frame.width!==dimensions.width;
   dimensions = {width:frame.width, height:frame.height,
     base:Math.max(innerWidth <= 1200 ? 2400 : innerWidth * 1.25, frame.width, frame.height)};
+  if (widthChanged && category==='hotels') state=startingView();
   render();
 }
 plus.addEventListener('click', () => animate(zoomMap(state, state.scale + .25,
@@ -155,30 +207,33 @@ map.addEventListener('click', event => {
   event.preventDefault();
   event.stopPropagation();
 }, true);
-location.addEventListener('pointerenter', event => {
-  if (event.pointerType === 'mouse' && !pointers.size && Date.now() >= suppressClickUntil) showTooltip(true);
-});
-location.addEventListener('pointerleave', event => {
-  if (event.pointerType !== 'mouse') return;
-  closeTimer = setTimeout(() => {
-    if (!location.querySelector(':focus-visible')) showTooltip(false);
-  },160);
-});
-location.addEventListener('focusin', () => {
-  if (!pointers.size || location.querySelector(':focus-visible')) showTooltip(true);
-});
-location.addEventListener('focusout', event => {
-  if (!location.contains(event.relatedTarget) && !location.matches(':hover')) showTooltip(false);
-});
-marker.addEventListener('click', () => showTooltip(true));
+for (const place of places) {
+  const {element,marker}=place;
+  element.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse' && !pointers.size && Date.now() >= suppressClickUntil) showTooltip(true,place);
+  });
+  element.addEventListener('pointerleave', event => {
+    if (event.pointerType !== 'mouse') return;
+    closeTimer = setTimeout(() => {
+      if (activePlace===place && !element.querySelector(':focus-visible')) showTooltip(false);
+    },160);
+  });
+  element.addEventListener('focusin', () => {
+    if (!pointers.size || element.querySelector(':focus-visible')) showTooltip(true,place);
+  });
+  element.addEventListener('focusout', event => {
+    if (activePlace===place && !element.contains(event.relatedTarget) && !element.matches(':hover')) showTooltip(false);
+  });
+  marker.addEventListener('click', () => showTooltip(true,place));
+  element.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.stopPropagation();
+    marker.focus({preventScroll:true});
+    showTooltip(false);
+  });
+}
 document.addEventListener('pointerdown', event => {
-  if (!location.contains(event.target)) showTooltip(false);
-});
-location.addEventListener('keydown', event => {
-  if (event.key !== 'Escape') return;
-  event.stopPropagation();
-  marker.focus({preventScroll:true});
-  showTooltip(false);
+  if (activePlace && !activePlace.element.contains(event.target)) showTooltip(false);
 });
 map.addEventListener('keydown', event => {
   if (event.target !== map) return;

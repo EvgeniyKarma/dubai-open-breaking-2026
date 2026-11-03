@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261103-travel-mobile-gutters">
-  <script src="championships.js?v=20261103-travel-mobile-gutters" defer></script>
-  <script type="module" src="travel-map.js?v=20261103-travel-mobile-gutters"></script>
+  <link rel="stylesheet" href="championships.css?v=20261103-travel-hotels">
+  <script src="championships.js?v=20261103-travel-hotels" defer></script>
+  <script type="module" src="travel-map.js?v=20261103-travel-hotels"></script>
 </head>
 <body>
   <main>
@@ -211,19 +211,35 @@
           <button class="map-control map-zoom-out" aria-label="Zoom out"><span aria-hidden="true"></span></button>
           <button class="map-control map-reset" aria-label="Reset map"><span aria-hidden="true"></span></button>
         </div>
-        <div class="travel-location" id="travel-venue-panel" role="tabpanel" aria-labelledby="travel-venue-tab">
-          <button class="travel-marker" aria-label="Dubai World Trade Centre: venue details" aria-expanded="false" aria-controls="venue-details">
-            <img class="travel-logo" src="../Logo.png" width="100" height="100" alt="" draggable="false">
-            <span class="travel-pin" aria-hidden="true"></span>
-          </button>
-          <div class="travel-tooltip" id="venue-details" role="region" aria-labelledby="venue-name" inert>
-            <div><h3 id="venue-name">Dubai World Trade Centre</h3><p>Sheikh Zayed Rd - Trade Center Second - Dubai - UAE</p></div>
-            <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/siGpjxKyDZxfsJ6E8" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+        <div class="travel-markers" id="travel-map-panel" role="tabpanel" aria-labelledby="travel-venue-tab">
+          <div class="travel-location" data-map-x="0" data-map-y="0">
+            <button class="travel-marker" aria-label="Dubai World Trade Centre: venue details" aria-expanded="false" aria-controls="venue-details">
+              <img class="travel-logo" src="../Logo.png" width="100" height="100" alt="" draggable="false">
+              <span class="travel-pin" aria-hidden="true"></span>
+            </button>
+            <div class="travel-tooltip" id="venue-details" role="region" aria-labelledby="venue-name" inert>
+              <div><h3 id="venue-name">Dubai World Trade Centre</h3><p>Sheikh Zayed Rd - Trade Center Second - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/siGpjxKyDZxfsJ6E8" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="travel-location travel-hotel" data-category="hotels" data-map-x="-247" data-map-y="106" hidden>
+            <button class="travel-marker hotel-marker" aria-label="Ibis World Trade Centre Dubai: hotel details" aria-expanded="false" aria-controls="ibis-details"><span aria-hidden="true"></span></button>
+            <div class="travel-tooltip" id="ibis-details" role="region" aria-labelledby="ibis-name" inert>
+              <div><h3 id="ibis-name">Ibis World Trade Centre Dubai</h3><p>Sheikh Zayed Rd - Trade Center Second - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/iMHhbTHWKJNUxFAd9" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="travel-location travel-hotel" data-category="hotels" data-map-x="-115" data-map-y="203" hidden>
+            <button class="travel-marker hotel-marker" aria-label="Novotel World Trade Centre Dubai: hotel details" aria-expanded="false" aria-controls="novotel-details"><span aria-hidden="true"></span></button>
+            <div class="travel-tooltip" id="novotel-details" role="region" aria-labelledby="novotel-name" inert>
+              <div><h3 id="novotel-name">Novotel World Trade Centre Dubai</h3><p>Al Mustaqbal St - Trade Center Second - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/Uvh3m4UAmiorTAhw9" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
           </div>
         </div>
         <div class="travel-tabs" role="tablist" aria-label="Travel guide categories">
-          <button class="menu-toggle travel-tab" id="travel-venue-tab" role="tab" aria-selected="true" aria-controls="travel-venue-panel">Venue<span class="menu-icon travel-venue-icon" aria-hidden="true"></span></button>
-          <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Hotels<span class="menu-icon travel-hotels-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" id="travel-venue-tab" role="tab" aria-selected="true" aria-controls="travel-map-panel">Venue<span class="menu-icon travel-venue-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" id="travel-hotels-tab" role="tab" aria-selected="false" aria-controls="travel-map-panel" tabindex="-1">Hotels<span class="menu-icon travel-hotels-icon" aria-hidden="true"></span></button>
           <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Transport<span class="menu-icon travel-transport-icon" aria-hidden="true"></span></button>
           <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Food<span class="menu-icon travel-food-icon" aria-hidden="true"></span></button>
         </div>

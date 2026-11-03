@@ -71,6 +71,7 @@ function startingView() {
 }
 function selectCategory(tab, moveFocus=false) {
   if (pointers.size) endGesture();
+  panel.classList.remove('is-entering');
   category=tab.id==='travel-hotels-tab'?'hotels':'venue';
   showTooltip(false);
   for (const item of tabs) {
@@ -82,6 +83,8 @@ function selectCategory(tab, moveFocus=false) {
   for (const place of places) place.element.hidden=place.element.dataset.category==='hotels' && category!=='hotels';
   if (moveFocus) tab.focus({preventScroll:true});
   animate(startingView());
+  // animate() commits the reset frame, so repeated category visits restart the reveal.
+  panel.classList.add('is-entering');
 }
 tabs.forEach((tab,index)=>{
   tab.addEventListener('click',()=>selectCategory(tab));

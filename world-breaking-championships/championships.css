@@ -253,7 +253,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 }
 @media(max-width:600px){
   .travel-heading{padding:100px 24px 48px}.travel-heading h2{font-size:48px}
-  .travel-map{margin-left:0;margin-right:0}
+  .travel-map{margin-left:16px;margin-right:16px}
   .travel-map-controls{left:50%;transform:translateX(-50%)}
   .map-control{width:40px;height:40px}.map-control span{width:16px;height:16px}
   .map-zoom-in span{mask-image:url(../assets/travel-guide/zoom-in-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/zoom-in-mobile.svg)}

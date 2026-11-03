@@ -194,10 +194,13 @@ const schedule = document.querySelector('.schedule');
 const scheduleMobile = matchMedia('(max-width:600px)');
 const scheduleTabs = [...document.querySelectorAll('.schedule-tab')];
 const scheduleDays = [...document.querySelectorAll('.schedule-day')];
-const scheduleText = [...schedule.querySelectorAll('[data-schedule-text]')];
-const scheduleCopies = new Map(scheduleText.map(element => [element,
-  element.innerHTML.replace(/<br\s*\/?\s*>/gi, '\n')
-]));
+// Both editorial sections share the same measured per-letter reveal pipeline.
+const scheduleText = [...document.querySelectorAll('[data-schedule-text]')];
+const scheduleCopies = new Map(scheduleText.map(element => {
+  const copy = element.cloneNode(true);
+  copy.querySelectorAll('br').forEach(lineBreak => lineBreak.replaceWith('\n'));
+  return [element, copy.textContent];
+}));
 let selectedDay = 0;
 let scheduleFrame = 0;
 let scheduleReady = false;
@@ -289,7 +292,7 @@ function revealSchedule(replayVisible = false) {
   // Reveal remaining visible content at the document end,
   // even when there is not enough space below to scroll it to screen center.
   const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
-  for (const element of schedule.querySelectorAll('[data-schedule-text], .schedule-rule')) {
+  for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule')) {
     if (element.classList.contains('is-revealed') || element.closest('[hidden]')) continue;
     const box = element.getBoundingClientRect();
     const isLine = element.classList.contains('schedule-rule');

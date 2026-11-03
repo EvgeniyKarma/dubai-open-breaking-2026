@@ -177,3 +177,17 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .price-phase h3{margin:0;font-size:16px;font-weight:500;line-height:1;letter-spacing:-.04em}
 .price-dates{color:#fa4f1f;font-size:30px;font-weight:400;line-height:1;letter-spacing:-.04em}
 @media(max-width:600px){.price-content>h2{font-size:32px}.price-dates{font-size:24px}}
+
+/* Prize money follows Schedule's fluid scale and reuses its text/line masks. */
+.prize-money{--prize-unit:calc(100vw / 1920);padding:calc(120 * var(--prize-unit)) var(--inset);background:white;color:#111;scroll-margin-top:var(--header-height);overflow-anchor:none}
+.prize-money h2{margin:0 0 calc(24 * var(--prize-unit));font-size:calc(120 * var(--prize-unit));font-weight:400;line-height:1;letter-spacing:-.06em}
+.prize-categories{display:flex;flex-direction:column;gap:calc(64 * var(--prize-unit))}
+.prize-category{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding-top:calc(25 * var(--prize-unit));font-size:calc(32 * var(--prize-unit));line-height:1.1;letter-spacing:-.04em}
+.prize-category h3{min-width:0;margin:0;font-size:inherit;font-weight:500;line-height:1.1;letter-spacing:inherit}
+.prize-list{display:flex;flex-direction:column;gap:calc(24 * var(--prize-unit));min-width:0;margin:0}
+.prize-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(24 * var(--prize-unit))}
+.prize-row+.prize-row{padding-top:calc(25 * var(--prize-unit))}
+.prize-row dt,.prize-row dd{min-width:0;margin:0;font-weight:400}
+.prize-row dd{color:#fa4f1f}
+@media(max-width:1200px){.prize-money{--prize-unit:1px}.prize-money h2{font-size:100px}}
+@media(max-width:600px){.prize-money{padding:100px 16px}.prize-money h2{font-size:48px;margin-bottom:48px}.prize-category{display:block}.prize-category h3{font-size:32px;margin-bottom:32px}.prize-solo h3{font-size:30px}.prize-list{gap:16px;font-size:24px;line-height:1.1}}

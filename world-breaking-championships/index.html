@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261103-prize-refinements">
-  <script src="championships.js?v=20261103-prize-refinements" defer></script>
+  <link rel="stylesheet" href="championships.css?v=20261103-travel-guide">
+  <script src="championships.js?v=20261103-travel-guide" defer></script>
 </head>
 <body>
   <main>
@@ -199,6 +199,29 @@
             <div class="prize-row"><span class="schedule-rule" aria-hidden="true"></span><dt data-schedule-text>5th–8th places</dt><dd data-schedule-text>$ 2 500 each</dd></div>
           </dl>
         </article>
+      </div>
+    </section>
+    <section class="travel-guide" id="travel-guide" aria-labelledby="travel-title">
+      <div class="travel-heading"><h2 id="travel-title" data-schedule-text>Travel guide</h2></div>
+      <div class="travel-map" role="region" aria-label="Venue map">
+        <div class="travel-map-art" aria-hidden="true"></div>
+        <div class="travel-location" id="travel-venue-panel" role="tabpanel" aria-labelledby="travel-venue-tab">
+          <button class="travel-marker" aria-label="Dubai World Trade Centre: venue details" aria-expanded="false" aria-controls="venue-details">
+            <img class="travel-logo" src="../Logo.png" width="100" height="100" alt="">
+            <span class="travel-pin" aria-hidden="true"></span>
+            <span class="travel-label" data-schedule-text>Dubai World Trade Centre</span>
+          </button>
+          <div class="travel-tooltip" id="venue-details" role="region" aria-labelledby="venue-name" inert>
+            <div><h3 id="venue-name">Dubai World Trade Centre</h3><p>Sheikh Zayed Rd - Trade Center Second - Dubai - UAE</p></div>
+            <a class="travel-map-link" href="https://maps.app.goo.gl/siGpjxKyDZxfsJ6E8" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+          </div>
+        </div>
+        <div class="travel-tabs" role="tablist" aria-label="Travel guide categories">
+          <button class="menu-toggle travel-tab" id="travel-venue-tab" role="tab" aria-selected="true" aria-controls="travel-venue-panel">Venue<span class="menu-icon travel-venue-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Hotels<span class="menu-icon travel-hotels-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Transport<span class="menu-icon travel-transport-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Food<span class="menu-icon travel-food-icon" aria-hidden="true"></span></button>
+        </div>
       </div>
     </section>
     <!-- The remaining section designs and content will supply the other navigation targets. -->

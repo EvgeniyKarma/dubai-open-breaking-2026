@@ -196,3 +196,36 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .prize-money .letter-mask,.format-title .letter-mask{padding:.2em .08em;margin:-.2em -.08em}
 .prize-money [data-schedule-text]{display:flow-root}
 .prize-money .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
+
+/* Desktop Travel guide: static SVG geography, independent interactive locations. */
+.travel-guide{background:#111;color:white;scroll-margin-top:var(--header-height)}
+.travel-heading{padding:calc(120 * 100vw / 1920) var(--inset) calc(60 * 100vw / 1920)}
+.travel-heading h2{margin:0;font-size:calc(120 * 100vw / 1920);font-weight:400;line-height:1;letter-spacing:-.06em}
+.travel-map{position:relative;height:calc(var(--viewport-height) - var(--header-height));overflow:hidden;isolation:isolate;background:#111}
+.travel-map-art{position:absolute;left:50%;top:50%;width:max(125vw,calc(var(--viewport-height) - var(--header-height)));aspect-ratio:1;transform:translate(-50%,-50%);background:url(../assets/travel-guide/map.svg) center/contain no-repeat;z-index:-1;pointer-events:none}
+.travel-location{position:absolute;left:50%;top:50%;width:0;height:0}
+.travel-marker{position:absolute;left:-50px;top:-94px;width:100px;height:100px;background:none;padding:0;color:#111}
+.travel-logo{position:absolute;inset:0;width:100px;height:100px;object-fit:contain}
+.travel-pin{position:absolute;left:38px;top:82px;width:24px;height:24px;background:url(../assets/travel-guide/marker.svg) center/contain no-repeat;z-index:-1}
+.travel-label{position:absolute;left:59px;top:103px;display:flow-root;padding:4px 10px;border-radius:4px;background:#fa4f1f;color:#111;white-space:nowrap;font-size:18px;font-weight:500;line-height:1.1;letter-spacing:-.04em;text-align:left}
+.travel-tooltip{position:absolute;left:24px;bottom:min(108px,calc((var(--viewport-height) - var(--header-height)) / 2 - 216px));width:280px;height:200px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;background:white;color:#111;border-radius:4px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .2s ease-in-out,transform .2s ease-in-out,visibility .2s;z-index:2}
+.travel-tooltip::after{content:'';position:absolute;left:-76px;right:0;top:100%;height:140px;z-index:-1}
+.travel-tooltip h3{margin:0 0 12px;font-size:18px;font-weight:500;line-height:1.1;letter-spacing:-.04em}
+.travel-tooltip p{font-size:14px;font-weight:400;line-height:1.1;letter-spacing:-.04em}
+.travel-location.is-open .travel-tooltip{opacity:1;visibility:visible;transform:translateY(0)}
+.travel-map-link{display:flex;align-items:center;gap:12px;align-self:flex-start;font-size:16px;font-weight:500;line-height:1;letter-spacing:-.04em}
+.travel-map-link .menu-icon::before{mask-image:url(../assets/arrow-right-light.svg);-webkit-mask-image:url(../assets/arrow-right-light.svg)}
+.travel-map-link:hover .menu-icon{background:#fa4f1f}
+.travel-tabs{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);display:flex;gap:12px}
+.travel-tab{background:white;min-width:0;width:130px}
+.travel-tab:nth-child(2){width:127px}.travel-tab:nth-child(3){width:153px}.travel-tab:nth-child(4){width:118px}
+.travel-tab::before{background:#fa4f1f}.travel-tab[aria-selected="true"]{background:#fa4f1f}
+.travel-tab:is(:hover,:focus-visible){color:#111}.travel-tab:is(:hover,:focus-visible) .menu-icon{background:#111;color:white}
+.travel-tab:disabled{cursor:default;opacity:1}.travel-tab:disabled::before{display:none}
+.travel-venue-icon::before{mask-image:url(../assets/travel-guide/venue.svg);-webkit-mask-image:url(../assets/travel-guide/venue.svg)}
+.travel-hotels-icon::before{mask-image:url(../assets/travel-guide/hotels.svg);-webkit-mask-image:url(../assets/travel-guide/hotels.svg)}
+.travel-transport-icon::before{mask-image:url(../assets/travel-guide/transport.svg);-webkit-mask-image:url(../assets/travel-guide/transport.svg)}
+.travel-food-icon::before{mask-image:url(../assets/travel-guide/food.svg);-webkit-mask-image:url(../assets/travel-guide/food.svg)}
+.travel-guide .letter-mask{padding:.2em .08em;margin:-.2em -.08em}
+.travel-guide [data-schedule-text]{display:flow-root}.travel-guide .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
+@media(max-width:1200px){.travel-guide{display:none}}

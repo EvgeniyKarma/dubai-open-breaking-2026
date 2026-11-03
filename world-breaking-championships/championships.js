@@ -194,7 +194,7 @@ const schedule = document.querySelector('.schedule');
 const scheduleMobile = matchMedia('(max-width:600px)');
 const scheduleTabs = [...document.querySelectorAll('.schedule-tab')];
 const scheduleDays = [...document.querySelectorAll('.schedule-day')];
-// Both editorial sections share the same measured per-letter reveal pipeline.
+// Editorial headings and map labels share the same measured per-letter reveal pipeline.
 const scheduleText = [...document.querySelectorAll('[data-schedule-text]')];
 const scheduleCopies = new Map(scheduleText.map(element => {
   const copy = element.cloneNode(true);
@@ -292,8 +292,8 @@ function revealSchedule(replayVisible = false) {
   // Reveal remaining visible content at the document end,
   // even when there is not enough space below to scroll it to the line reveal threshold.
   const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
-  for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule')) {
-    if (element.classList.contains('is-revealed') || element.closest('[hidden]')) continue;
+  for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule, .travel-guide [data-schedule-text]')) {
+    if (element.classList.contains('is-revealed') || element.closest('[hidden]') || !element.getClientRects().length) continue;
     const box = element.getBoundingClientRect();
     const isLine = element.classList.contains('schedule-rule');
     const threshold = isLine ? Math.max(0, height - 200) : height * .85;
@@ -567,3 +567,32 @@ window.addEventListener('scroll', () => {
 }, {passive:true});
 window.addEventListener('resize', queueFormatParallax, {passive:true});
 reducedMotion.addEventListener('change', queueFormatParallax);
+
+// The venue remains independent of category layers, ready for future tabs.
+const travelLocation = document.querySelector('.travel-location');
+const travelMarker = travelLocation.querySelector('.travel-marker');
+const travelTooltip = travelLocation.querySelector('.travel-tooltip');
+let travelCloseTimer;
+function setTravelTooltip(open) {
+  clearTimeout(travelCloseTimer);
+  travelLocation.classList.toggle('is-open', open);
+  travelMarker.setAttribute('aria-expanded', String(open));
+  travelTooltip.inert = !open;
+}
+travelLocation.addEventListener('pointerenter', () => setTravelTooltip(true));
+travelLocation.addEventListener('pointerleave', () => {
+  travelCloseTimer = setTimeout(() => {
+    if (!travelLocation.querySelector(':focus-visible')) setTravelTooltip(false);
+  }, 160);
+});
+travelLocation.addEventListener('focusin', () => setTravelTooltip(true));
+travelLocation.addEventListener('focusout', event => {
+  if (!travelLocation.contains(event.relatedTarget) && !travelLocation.matches(':hover')) setTravelTooltip(false);
+});
+travelMarker.addEventListener('click', () => setTravelTooltip(true));
+travelLocation.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  event.stopPropagation();
+  travelMarker.focus({preventScroll:true});
+  setTravelTooltip(false);
+});

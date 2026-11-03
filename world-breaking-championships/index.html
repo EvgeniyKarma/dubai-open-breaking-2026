@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261103-travel-refined">
-  <script src="championships.js?v=20261103-travel-refined" defer></script>
+  <link rel="stylesheet" href="championships.css?v=20261103-travel-map-controls">
+  <script src="championships.js?v=20261103-travel-map-controls" defer></script>
+  <script type="module" src="travel-map.js?v=20261103-travel-map-controls"></script>
 </head>
 <body>
   <main>
@@ -203,11 +204,16 @@
     </section>
     <section class="travel-guide" id="travel-guide" aria-labelledby="travel-title">
       <div class="travel-heading"><h2 id="travel-title" data-schedule-text>Travel guide</h2></div>
-      <div class="travel-map" role="region" aria-label="Venue map">
+      <div class="travel-map" role="region" aria-label="Venue map" tabindex="0">
         <div class="travel-map-art" aria-hidden="true"></div>
+        <div class="travel-map-controls" role="group" aria-label="Map controls">
+          <button class="map-control map-zoom-in" aria-label="Zoom in" disabled><span aria-hidden="true"></span></button>
+          <button class="map-control map-zoom-out" aria-label="Zoom out"><span aria-hidden="true"></span></button>
+          <button class="map-control map-reset" aria-label="Reset map"><span aria-hidden="true"></span></button>
+        </div>
         <div class="travel-location" id="travel-venue-panel" role="tabpanel" aria-labelledby="travel-venue-tab">
           <button class="travel-marker" aria-label="Dubai World Trade Centre: venue details" aria-expanded="false" aria-controls="venue-details">
-            <img class="travel-logo" src="../Logo.png" width="100" height="100" alt="">
+            <img class="travel-logo" src="../Logo.png" width="100" height="100" alt="" draggable="false">
             <span class="travel-pin" aria-hidden="true"></span>
           </button>
           <div class="travel-tooltip" id="venue-details" role="region" aria-labelledby="venue-name" inert>
@@ -222,6 +228,7 @@
           <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Food<span class="menu-icon travel-food-icon" aria-hidden="true"></span></button>
         </div>
       </div>
+      <div class="travel-scroll-strip" aria-hidden="true"></div>
     </section>
     <!-- The remaining section designs and content will supply the other navigation targets. -->
   </main>

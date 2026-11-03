@@ -567,32 +567,3 @@ window.addEventListener('scroll', () => {
 }, {passive:true});
 window.addEventListener('resize', queueFormatParallax, {passive:true});
 reducedMotion.addEventListener('change', queueFormatParallax);
-
-// The venue remains independent of category layers, ready for future tabs.
-const travelLocation = document.querySelector('.travel-location');
-const travelMarker = travelLocation.querySelector('.travel-marker');
-const travelTooltip = travelLocation.querySelector('.travel-tooltip');
-let travelCloseTimer;
-function setTravelTooltip(open) {
-  clearTimeout(travelCloseTimer);
-  travelLocation.classList.toggle('is-open', open);
-  travelMarker.setAttribute('aria-expanded', String(open));
-  travelTooltip.inert = !open;
-}
-travelLocation.addEventListener('pointerenter', () => setTravelTooltip(true));
-travelLocation.addEventListener('pointerleave', () => {
-  travelCloseTimer = setTimeout(() => {
-    if (!travelLocation.querySelector(':focus-visible')) setTravelTooltip(false);
-  }, 160);
-});
-travelLocation.addEventListener('focusin', () => setTravelTooltip(true));
-travelLocation.addEventListener('focusout', event => {
-  if (!travelLocation.contains(event.relatedTarget) && !travelLocation.matches(':hover')) setTravelTooltip(false);
-});
-travelMarker.addEventListener('click', () => setTravelTooltip(true));
-travelLocation.addEventListener('keydown', event => {
-  if (event.key !== 'Escape') return;
-  event.stopPropagation();
-  travelMarker.focus({preventScroll:true});
-  setTravelTooltip(false);
-});

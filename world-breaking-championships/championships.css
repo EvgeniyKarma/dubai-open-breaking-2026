@@ -197,7 +197,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .prize-money [data-schedule-text]{display:flow-root}
 .prize-money .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
 
-/* Desktop Travel guide: static SVG geography, independent interactive locations. */
+/* Travel guide: pan/zoom geography with independently sized location markers. */
 .travel-guide{background:#111;color:white;scroll-margin-top:var(--header-height)}
 .travel-heading{padding:calc(120 * 100vw / 1920) var(--inset) calc(60 * 100vw / 1920)}
 .travel-heading h2{margin:0;font-size:calc(120 * 100vw / 1920);font-weight:400;line-height:1;letter-spacing:-.06em}
@@ -214,7 +214,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .travel-location.is-open .travel-tooltip{opacity:1;visibility:visible;transform:translateY(0)}
 .travel-map-link{align-self:flex-start;min-width:0;white-space:nowrap}
 .travel-map-link .menu-icon::before{mask-image:url(../assets/arrow-right-light.svg);-webkit-mask-image:url(../assets/arrow-right-light.svg)}
-.travel-tabs{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:12px}
+.travel-tabs{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:8px}
 .travel-tab{background:white;min-width:0;width:130px}
 .travel-tab:nth-child(2){width:127px}.travel-tab:nth-child(3){width:153px}.travel-tab:nth-child(4){width:118px}
 .travel-tab::before{background:#fa4f1f}.travel-tab[aria-selected="true"]{background:#fa4f1f}
@@ -226,4 +226,49 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .travel-food-icon::before{mask-image:url(../assets/travel-guide/food.svg);-webkit-mask-image:url(../assets/travel-guide/food.svg)}
 .travel-guide .letter-mask{padding:.2em .08em;margin:-.2em -.08em}
 .travel-guide [data-schedule-text]{display:flow-root}.travel-guide .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
-@media(max-width:1200px){.travel-guide{display:none}}
+
+
+.travel-map{overflow:clip;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.travel-map.is-dragging{cursor:grabbing}
+.travel-map-art{width:var(--map-size,2400px);transform:translate(calc(-50% + var(--map-x,0px)),calc(-50% + var(--map-y,0px)))}
+.travel-location{transform:translate(var(--map-x,0px),var(--map-y,0px))}
+.travel-map.is-animating .travel-map-art{transition:width .35s ease-in-out,transform .35s ease-in-out}
+.travel-map.is-animating .travel-location{transition:transform .35s ease-in-out}
+.travel-tooltip{bottom:auto;top:var(--tooltip-top,-308px);left:var(--tooltip-left,24px);cursor:default;user-select:text;-webkit-user-select:text}
+.travel-tooltip::after{left:var(--bridge-left,-76px);right:auto;width:var(--bridge-width,356px);height:var(--bridge-height,140px)}
+.travel-map-controls{position:absolute;left:24px;top:24px;display:flex;gap:8px;z-index:3}
+.map-control{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:white;color:#111;padding:12px;transition:background .3s ease-in-out,color .3s ease-in-out;cursor:pointer}
+.map-control span{display:block;width:24px;height:24px;background:currentColor;mask:center/contain no-repeat;-webkit-mask:center/contain no-repeat}
+.map-zoom-in span{mask-image:url(../assets/travel-guide/zoom-in.svg);-webkit-mask-image:url(../assets/travel-guide/zoom-in.svg)}
+.map-zoom-out span{mask-image:url(../assets/travel-guide/zoom-out.svg);-webkit-mask-image:url(../assets/travel-guide/zoom-out.svg)}
+.map-reset span{mask-image:url(../assets/travel-guide/reset.svg);-webkit-mask-image:url(../assets/travel-guide/reset.svg)}
+.map-control:disabled{background:rgb(255 255 255 / .2);color:rgb(255 255 255 / .4);cursor:default}
+@media(hover:hover){.map-control:enabled:hover{background:#fa4f1f}}
+.travel-scroll-strip{display:none}
+@media(max-width:1200px){
+  .travel-heading{padding:120px 24px 60px}.travel-heading h2{font-size:100px}
+  .travel-map{height:max(320px,calc(var(--viewport-height) - var(--header-height) - 96px));margin-bottom:0}
+  .travel-scroll-strip{display:block;height:96px;touch-action:pan-y}
+}
+@media(max-width:600px){
+  .travel-heading{padding:100px 24px 48px}.travel-heading h2{font-size:48px}
+  .travel-map{margin-left:0;margin-right:0}
+  .travel-map-controls{left:50%;transform:translateX(-50%)}
+  .map-control{width:40px;height:40px}.map-control span{width:16px;height:16px}
+  .map-zoom-in span{mask-image:url(../assets/travel-guide/zoom-in-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/zoom-in-mobile.svg)}
+  .map-zoom-out span{mask-image:url(../assets/travel-guide/zoom-out-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/zoom-out-mobile.svg)}
+  .map-reset span{mask-image:url(../assets/travel-guide/reset-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/reset-mobile.svg)}
+  .travel-marker{left:-40px;top:-75px;width:80px;height:80px}.travel-logo{width:80px;height:80px}
+  .travel-pin{left:28px;top:63px}
+  .travel-tabs{bottom:16px;width:260px;max-width:calc(100% - 32px);flex-wrap:wrap;justify-content:center}
+  .travel-tab{width:110px;height:40px;min-width:0;font-size:16px;gap:8px;padding-left:16px}
+  .travel-tab:nth-child(2){width:107px}.travel-tab:nth-child(3){width:133px}.travel-tab:nth-child(4){width:98px}
+  .travel-map-link{font-size:16px;height:48px;padding-left:24px}.travel-map-link .menu-icon{width:40px;height:40px}.travel-map-link .menu-icon::before{width:24px;height:24px}
+}
+
+@media(max-width:600px){
+.travel-venue-icon::before{mask-image:url(../assets/travel-guide/venue-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/venue-mobile.svg)}
+.travel-hotels-icon::before{mask-image:url(../assets/travel-guide/hotels-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/hotels-mobile.svg)}
+.travel-transport-icon::before{mask-image:url(../assets/travel-guide/transport-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/transport-mobile.svg)}
+.travel-food-icon::before{mask-image:url(../assets/travel-guide/food-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/food-mobile.svg)}
+}

@@ -211,6 +211,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .travel-tooltip::after{content:'';position:absolute;left:-76px;right:0;top:100%;height:140px;z-index:-1}
 .travel-tooltip h3{margin:0 0 12px;font-size:18px;font-weight:500;line-height:1.1;letter-spacing:-.04em}
 .travel-tooltip p{font-size:14px;font-weight:400;line-height:1.1;letter-spacing:-.04em}
+.travel-location.is-open{z-index:4}
 .travel-location.is-open .travel-tooltip{opacity:1;visibility:visible;transform:translateY(0)}
 .travel-map-link{align-self:flex-start;min-width:0;white-space:nowrap}
 .travel-map-link .menu-icon::before{mask-image:url(../assets/arrow-right-light.svg);-webkit-mask-image:url(../assets/arrow-right-light.svg)}

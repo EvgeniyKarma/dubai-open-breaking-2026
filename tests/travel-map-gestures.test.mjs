@@ -11,7 +11,7 @@ class Element {
   addEventListener(type,fn) { this.events.set(type,[...(this.events.get(type)||[]),fn]); }
   emit(type,event={}) { for(const fn of this.events.get(type)||[]) fn(event); }
   setAttribute(k,v) { this.attributes[k]=v; }
-  closest() { return null; }
+  closest(selectors) { return selectors.split(',').some(s=>this.classes.has(s.replace('.','')))?this:null; }
   matches() { return false; }
   contains(target) { return this===target; }
   querySelector(selector) { return selector===':focus-visible'?null:(this.children.get(selector)||elements.get(selector)); }
@@ -43,8 +43,17 @@ for (const [name,x,y] of [['ibis',-247,106],['novotel',-115,203]]) {
   button.offsetWidth=40;button.offsetHeight=40;
   el.children.set('.travel-marker',button);el.children.set('.travel-tooltip',tip);places.push(el);
 }
-const tabs=[new Element('venue tab'),new Element('hotels tab')];
-tabs[0].id='travel-venue-tab';tabs[1].id='travel-hotels-tab';
+for(const [name,x,y] of [['world-trade-centre',-306,-23],['emirates-towers',-624,489],['max',125,-605]]) {
+ const el=new Element(name),button=new Element(name+' marker'),tip=new Element(name+' tooltip');
+ el.dataset={mapX:String(x),mapY:String(y),category:'transport',station:name};el.hidden=true;
+ button.offsetWidth=40;button.offsetHeight=40;
+ el.children.set('.travel-marker',button);el.children.set('.travel-tooltip',tip);places.push(el);
+}
+const info=new Element('info'),infoToggle=new Element('info toggle');
+info.hidden=true;infoToggle.hidden=true;info.classList.add('transport-info');infoToggle.classList.add('map-info-toggle');
+elements.set('.transport-info',info);elements.set('.map-info-toggle',infoToggle);
+const tabs=[new Element('venue tab'),new Element('hotels tab'),new Element('transport tab')];
+tabs[0].id='travel-venue-tab';tabs[1].id='travel-hotels-tab';tabs[2].id='travel-transport-tab';
 elements.set('.travel-markers',new Element('panel'));
 const plus=elements.get('.map-zoom-in'),minus=elements.get('.map-zoom-out'),reset=elements.get('.map-reset');
 globalThis.window=new Element('window');
@@ -98,5 +107,20 @@ marker.emit('click');assert.equal(places[1].classList.contains('is-open'),false)
 reset.emit('click');assert.equal(value('--map-x'),0);assert.equal(value('--map-y'),0);assert.equal(value('--map-size'),2400);
 assert.equal(tabs[1].attributes['aria-selected'],'true');assert.equal(places[1].hidden,false);
 tabs[0].emit('click');assert.equal(places[1].hidden,true);assert.equal(value('--map-x'),0);
+// Info auto-opens once per module/page lifetime, and is exclusive with station tooltips.
+tabs[2].emit('click');assert.equal(info.hidden,false);assert.equal(infoToggle.hidden,false);
+assert.equal(places[1].hidden,true);assert.ok(places.slice(3).every(p=>!p.hidden));
+assert.equal(places[3].children.get('.travel-marker').values.get('--marker-delay'),'300ms');
+const transportX=value('--map-x');assert.ok(transportX>0);
+map.emit('pointerdown',pointer(8,100,300,info));move(8,100,350);up(8);assert.equal(value('--map-x'),transportX);
+document.emit('pointerdown',{target:map});assert.equal(info.hidden,true);
+tabs[0].emit('click');assert.equal(infoToggle.hidden,true);
+tabs[2].emit('click');assert.equal(info.hidden,true);
+infoToggle.emit('click');assert.equal(info.hidden,false);
+places[3].children.get('.travel-marker').emit('click');assert.equal(info.hidden,true);assert.equal(places[3].classList.contains('is-open'),true);
+infoToggle.emit('click');assert.equal(info.hidden,false);assert.equal(places[3].classList.contains('is-open'),false);
+info.emit('keydown',{key:'Escape',stopPropagation(){}});assert.equal(info.hidden,true);
+reset.emit('click');assert.equal(value('--map-x'),0);assert.equal(value('--map-y'),0);assert.equal(tabs[2].attributes['aria-selected'],'true');
+tabs[1].emit('click');assert.ok(places.slice(3).every(p=>p.hidden));assert.equal(infoToggle.hidden,true);
 Date.now=originalNow;
 console.log('Travel map gestures: touch pan, pinch, finger handoff, tap suppression, bounds and reset passed.');

@@ -46,3 +46,16 @@ for (const [width,height] of [[408,804],[288,488]]) {
  }
 }
 console.log('Hotel framing: venue and both fixed-size markers fit mobile control/tab insets.');
+
+for(const [width,height] of [[408,804],[288,488]]) {
+ const dims={width,height,base:2400};
+ const points=[{x:0,y:0,left:-40,right:40,top:-75,bottom:6},{x:-306,y:-23,left:-20,right:20,top:-20,bottom:20}];
+ const fit=fitMapLocations(points,dims);
+ const state=constrainMap({...fit,y:0},dims);
+ for(const point of points) {
+  const offset=locationOffset(point,state,2400);
+  assert.ok(width/2+offset.x+point.left>=16-.001);
+  assert.ok(width/2+offset.x+point.right<=width-16+.001);
+ }
+}
+console.log('Transport mobile framing: venue and World Trade Centre station fit.');

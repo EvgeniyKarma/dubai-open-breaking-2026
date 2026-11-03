@@ -1,4 +1,4 @@
-import {clamp, constrainMap, zoomMap, locationOffset, fitMapLocations} from './map-geometry.mjs?v=20261103-travel-hotels';
+import {clamp, constrainMap, zoomMap, locationOffset, fitMapLocations} from './map-geometry.mjs?v=20261103-travel-transport';
 
 const map = document.querySelector('.travel-map');
 const art = map.querySelector('.travel-map-art');
@@ -8,6 +8,9 @@ const places = [...map.querySelectorAll('.travel-location')].map(element => ({
 }));
 const tabs = [...map.querySelectorAll('.travel-tab:not(:disabled)')];
 const panel = map.querySelector('.travel-markers');
+const info = map.querySelector('.transport-info');
+const infoToggle = map.querySelector('.map-info-toggle');
+let infoVisited = false;
 let category = 'venue';
 let activePlace = null;
 const plus = map.querySelector('.map-zoom-in');
@@ -59,20 +62,40 @@ function showTooltip(open, place=activePlace) {
     item.tooltip.inert = !visible;
   }
   activePlace=open?place:null;
-  if (open) positionTooltip(place);
+  if (open) {
+    showInfo(false);
+    positionTooltip(place);
+  }
 }
+function showInfo(open) {
+  open = open && category==='transport';
+  if (open) showTooltip(false);
+  info.hidden = !open;
+  infoToggle.setAttribute('aria-expanded',String(open));
+}
+infoToggle.addEventListener('click',()=>showInfo(info.hidden));
+info.addEventListener('keydown',event=>{
+  if(event.key!=='Escape') return;
+  event.stopPropagation();
+  showInfo(false);
+  infoToggle.focus({preventScroll:true});
+});
 function startingView() {
-  if (category !== 'hotels' || innerWidth > 600) return {scale:1,x:0,y:0};
-  return fitMapLocations(places.map(p=>({...p.point,
+  if (category==='venue' || innerWidth>600) return {scale:1,x:0,y:0};
+  const visible = places.filter(p=>!p.element.hidden && (category==='hotels' || !p.element.dataset.category || p.element.dataset.station==='world-trade-centre'));
+  const fitted = fitMapLocations(visible.map(p=>({...p.point,
     left:-p.marker.offsetWidth/2,right:p.marker.offsetWidth/2,
-    top:p.element.classList.contains('travel-hotel')?-20:-75,
-    bottom:p.element.classList.contains('travel-hotel')?20:6
+    top:p.element.dataset.category?-20:-75,
+    bottom:p.element.dataset.category?20:6
   })), dimensions);
+  return category==='transport'?constrainMap({...fitted,y:0},dimensions):fitted;
 }
 function selectCategory(tab, moveFocus=false) {
   if (pointers.size) endGesture();
   panel.classList.remove('is-entering');
-  category=tab.id==='travel-hotels-tab'?'hotels':'venue';
+  category=tab.id.replace('travel-','').replace('-tab','');
+  showInfo(false);
+  infoToggle.hidden=category!=='transport';
   showTooltip(false);
   for (const item of tabs) {
     const selected=item===tab;
@@ -82,13 +105,18 @@ function selectCategory(tab, moveFocus=false) {
   panel.setAttribute('aria-labelledby',tab.id);
   let markerIndex=0;
   for (const place of places) {
-    place.element.hidden=place.element.dataset.category==='hotels' && category!=='hotels';
+    place.element.hidden=Boolean(place.element.dataset.category && place.element.dataset.category!==category);
     if (!place.element.hidden) place.marker.style.setProperty('--marker-delay', `${markerIndex++ * 300}ms`);
   }
   if (moveFocus) tab.focus({preventScroll:true});
   animate(startingView());
   // animate() commits the reset frame, so repeated category visits restart the reveal.
   panel.classList.add('is-entering');
+  if (category==='transport' && !infoVisited) {
+    infoVisited=true;
+    info.scrollTop=0;
+    showInfo(true);
+  }
 }
 tabs.forEach((tab,index)=>{
   tab.addEventListener('click',()=>selectCategory(tab));
@@ -117,6 +145,7 @@ function interruptAnimation() {
 }
 function animate(next) {
   showTooltip(false);
+  showInfo(false);
   interruptAnimation();
   // Commit the current geometry before transitioning both map and marker together.
   art.getBoundingClientRect();
@@ -132,7 +161,7 @@ function resize() {
   const widthChanged=frame.width!==dimensions.width;
   dimensions = {width:frame.width, height:frame.height,
     base:Math.max(innerWidth <= 1200 ? 2400 : innerWidth * 1.25, frame.width, frame.height)};
-  if (widthChanged && category==='hotels') state=startingView();
+  if (widthChanged && category!=='venue') state=startingView();
   render();
 }
 plus.addEventListener('click', () => animate(zoomMap(state, state.scale + .25,
@@ -165,7 +194,7 @@ function endGesture() {
   for (const id of ids) if (map.hasPointerCapture(id)) map.releasePointerCapture(id);
 }
 map.addEventListener('pointerdown', event => {
-  if (event.button !== 0 || event.target.closest('.travel-map-controls,.travel-tabs,.travel-tooltip')) return;
+  if (event.button !== 0 || event.target.closest('.travel-map-controls,.travel-tabs,.travel-tooltip,.transport-info,.map-info-toggle')) return;
   if (!pointers.size) {
     interruptAnimation();
     moved = false;
@@ -210,7 +239,7 @@ window.addEventListener('pointerup', releasePointer);
 window.addEventListener('pointercancel', releasePointer);
 window.addEventListener('blur', endGesture);
 map.addEventListener('click', event => {
-  if (Date.now() >= suppressClickUntil || event.target.closest('.travel-map-controls,.travel-tabs')) return;
+  if (Date.now() >= suppressClickUntil || event.target.closest('.travel-map-controls,.travel-tabs,.transport-info,.map-info-toggle')) return;
   event.preventDefault();
   event.stopPropagation();
 }, true);
@@ -241,6 +270,7 @@ for (const place of places) {
 }
 document.addEventListener('pointerdown', event => {
   if (activePlace && !activePlace.element.contains(event.target)) showTooltip(false);
+  if (!info.hidden && !info.contains(event.target) && !infoToggle.contains(event.target)) showInfo(false);
 });
 map.addEventListener('keydown', event => {
   if (event.target !== map) return;

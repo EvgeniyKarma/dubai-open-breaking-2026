@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261103-travel-marker-stagger">
-  <script src="championships.js?v=20261103-travel-marker-stagger" defer></script>
-  <script type="module" src="travel-map.js?v=20261103-travel-marker-stagger"></script>
+  <link rel="stylesheet" href="championships.css?v=20261103-travel-transport">
+  <script src="championships.js?v=20261103-travel-transport" defer></script>
+  <script type="module" src="travel-map.js?v=20261103-travel-transport"></script>
 </head>
 <body>
   <main>
@@ -205,6 +205,7 @@
     <section class="travel-guide" id="travel-guide" aria-labelledby="travel-title">
       <div class="travel-heading"><h2 id="travel-title" data-schedule-text>Travel guide</h2></div>
       <div class="travel-map" role="region" aria-label="Venue map" tabindex="0">
+        <div class="travel-map-surface">
         <div class="travel-map-art" aria-hidden="true"></div>
         <div class="travel-map-controls" role="group" aria-label="Map controls">
           <button class="map-control map-zoom-in" aria-label="Zoom in" disabled><span aria-hidden="true"></span></button>
@@ -236,11 +237,47 @@
               <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/Uvh3m4UAmiorTAhw9" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
             </div>
           </div>
+          <div class="travel-location travel-metro" data-category="transport" data-station="world-trade-centre" data-map-x="-306" data-map-y="-23" hidden>
+            <button class="travel-marker metro-marker" aria-label="World Trade Centre Metro Station: station details" aria-expanded="false" aria-controls="world-trade-centre-details"><span aria-hidden="true"></span></button>
+            <div class="travel-tooltip" id="world-trade-centre-details" role="region" aria-labelledby="world-trade-centre-name" inert>
+              <div><h3 id="world-trade-centre-name">World Trade Centre Metro Station</h3><p>Trade Center Second - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/N4yuN9zkDpNNAsa56" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="travel-location travel-metro" data-category="transport" data-station="emirates-towers" data-map-x="-624" data-map-y="489" hidden>
+            <button class="travel-marker metro-marker" aria-label="Emirates Towers Metro Station: station details" aria-expanded="false" aria-controls="emirates-towers-details"><span aria-hidden="true"></span></button>
+            <div class="travel-tooltip" id="emirates-towers-details" role="region" aria-labelledby="emirates-towers-name" inert>
+              <div><h3 id="emirates-towers-name">Emirates Towers Metro Station</h3><p>678H+XW5 - Trade Center Second - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/UgPjRhftMA4bqqTMA" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="travel-location travel-metro" data-category="transport" data-station="max" data-map-x="125" data-map-y="-605" hidden>
+            <button class="travel-marker metro-marker" aria-label="Max Metro Station: station details" aria-expanded="false" aria-controls="max-details"><span aria-hidden="true"></span></button>
+            <div class="travel-tooltip" id="max-details" role="region" aria-labelledby="max-name" inert>
+              <div><h3 id="max-name">Max Metro Station</h3><p>Sheikh Khalifa Bin Zayed Rd - Al Kifaf - Dubai - UAE</p></div>
+              <a class="menu-toggle travel-map-link" href="https://maps.app.goo.gl/WjNmHRhPXLHZADcc9" target="_blank" rel="noopener noreferrer">Look on map<span class="menu-icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
         </div>
+        </div>
+        <button class="map-control map-info-toggle" aria-label="Transport information" aria-controls="transport-info" aria-expanded="false" hidden><span aria-hidden="true"></span></button>
+        <aside class="transport-info" id="transport-info" role="region" aria-labelledby="transport-info-title" tabindex="0" hidden>
+          <h3 id="transport-info-title">Dubai World Trade Centre is easily accessible from Dubai International Airport and across the city.</h3>
+          <section class="transport-method" aria-labelledby="transport-metro-title">
+            <h4 id="transport-metro-title">By Metro</h4><p class="transport-duration">~20 min</p>
+            <p>Take the Red Line from Airport Terminal 1 or 3 towards Expo 2020 / Life Pharmacy. Get off at World Trade Centre station and follow signs to the exhibition complex.</p>
+            <p class="transport-note">No transfers required. A nol card is needed.</p>
+          </section>
+          <section class="transport-method" aria-labelledby="transport-taxi-title">
+            <h4 id="transport-taxi-title">By Taxi</h4><p class="transport-duration">~15–25 min</p>
+            <p>Official taxis are available 24/7 outside all airport terminals. You can also book a ride using Careem or Uber.</p>
+            <p class="transport-note">Airport taxi starting fare: AED 25, plus distance-based charges.</p>
+          </section>
+        </aside>
         <div class="travel-tabs" role="tablist" aria-label="Travel guide categories">
           <button class="menu-toggle travel-tab" id="travel-venue-tab" role="tab" aria-selected="true" aria-controls="travel-map-panel">Venue<span class="menu-icon travel-venue-icon" aria-hidden="true"></span></button>
           <button class="menu-toggle travel-tab" id="travel-hotels-tab" role="tab" aria-selected="false" aria-controls="travel-map-panel" tabindex="-1">Hotels<span class="menu-icon travel-hotels-icon" aria-hidden="true"></span></button>
-          <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Transport<span class="menu-icon travel-transport-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle travel-tab" id="travel-transport-tab" role="tab" aria-selected="false" aria-controls="travel-map-panel" tabindex="-1">Transport<span class="menu-icon travel-transport-icon" aria-hidden="true"></span></button>
           <button class="menu-toggle travel-tab" role="tab" aria-selected="false" disabled>Food<span class="menu-icon travel-food-icon" aria-hidden="true"></span></button>
         </div>
       </div>

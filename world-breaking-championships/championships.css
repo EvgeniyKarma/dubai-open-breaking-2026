@@ -229,7 +229,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .travel-guide [data-schedule-text]{display:flow-root}.travel-guide .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
 
 
-.travel-map{overflow:clip;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.travel-map{overflow:clip;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .travel-map.is-dragging{cursor:grabbing}
 .travel-map-art{width:var(--map-size,2400px);transform:translate(calc(-50% + var(--map-x,0px)),calc(-50% + var(--map-y,0px)))}
 .travel-location{transform:translate(var(--location-x,0px),var(--location-y,0px))}
@@ -264,7 +264,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .travel-tabs{bottom:16px;width:260px;max-width:calc(100% - 32px);flex-wrap:wrap;justify-content:center}
   .travel-tab{width:110px;height:40px;min-width:0;font-size:16px;gap:8px;padding-left:16px}
   .travel-tab:nth-child(2){width:107px}.travel-tab:nth-child(3){width:133px}.travel-tab:nth-child(4){width:98px}
-  .travel-map-link{font-size:16px;height:48px;padding-left:24px}.travel-map-link .menu-icon{width:40px;height:40px}.travel-map-link .menu-icon::before{width:24px;height:24px}
+  .travel-map-link{font-size:14px;height:40px;padding-left:16px}.travel-map-link .menu-icon{width:32px;height:32px}.travel-map-link .menu-icon::before{width:16px;height:16px}
 }
 
 @media(max-width:600px){
@@ -281,3 +281,18 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 
 .travel-markers.is-entering .travel-location:not([hidden]) .travel-marker{animation:map-marker-enter .55s ease-in-out both;animation-delay:var(--marker-delay,0ms)}
 @keyframes map-marker-enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.travel-map-surface{position:absolute;inset:0;touch-action:none}
+.travel-metro .metro-marker{left:-20px;top:-20px;width:40px;height:40px;padding:8px;display:grid;place-items:center;border-radius:50%;background:#fa4f1f}
+.metro-marker span{display:block;width:24px;height:24px;background:#111;mask:url(../assets/travel-guide/metro-marker.svg) center/contain no-repeat;-webkit-mask:url(../assets/travel-guide/metro-marker.svg) center/contain no-repeat}
+.travel-metro .travel-tooltip h3{max-width:177px}
+.map-info-toggle{position:absolute;top:24px;right:24px;z-index:3}
+.map-info-toggle span{mask-image:url(../assets/travel-guide/info.svg);-webkit-mask-image:url(../assets/travel-guide/info.svg)}
+.transport-info{position:absolute;right:24px;top:80px;width:520px;max-width:calc(100% - 48px);max-height:calc(100% - 104px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:24px;display:flex;flex-direction:column;gap:24px;background:white;color:#111;border-radius:8px;z-index:4;cursor:default;user-select:text;-webkit-user-select:text;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
+.transport-info[hidden],.map-info-toggle[hidden]{display:none}
+.transport-info h3{margin:0;font-size:24px;font-weight:500;line-height:1.2;letter-spacing:-.04em;flex:none}
+.transport-method{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:24px;border-top:1px solid #111;flex:none}
+.transport-method h4{margin:0;padding:4px 8px;border-radius:4px;background:#111;color:white;font-size:16px;font-weight:400;line-height:1.2;letter-spacing:-.04em}
+.transport-duration{font-size:24px;font-weight:500;line-height:1.2;color:#fa4f1f}
+.transport-note{color:rgb(17 17 17 / .5)}
+@media(max-width:600px){.map-info-toggle span{mask-image:url(../assets/travel-guide/info-mobile.svg);-webkit-mask-image:url(../assets/travel-guide/info-mobile.svg)}}

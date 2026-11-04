@@ -82,7 +82,7 @@ info.addEventListener('keydown',event=>{
 });
 function startingView() {
   if (category==='venue' || innerWidth>600) return {scale:1,x:0,y:0};
-  const visible = places.filter(p=>!p.element.hidden && (category==='hotels' || !p.element.dataset.category || p.element.dataset.station==='world-trade-centre'));
+  const visible = places.filter(p=>!p.element.hidden && (category!=='transport' || !p.element.dataset.category || p.element.dataset.station==='world-trade-centre'));
   const fitted = fitMapLocations(visible.map(p=>({...p.point,
     left:-p.marker.offsetWidth/2,right:p.marker.offsetWidth/2,
     top:p.element.dataset.category?-20:-75,

@@ -59,3 +59,18 @@ for(const [width,height] of [[408,804],[288,488]]) {
  }
 }
 console.log('Transport mobile framing: venue and World Trade Centre station fit.');
+
+for(const [width,height] of [[408,804],[288,488]]) {
+ const dims={width,height,base:2400};
+ const points=[{x:0,y:0,left:-40,right:40,top:-75,bottom:6},
+ ...[[-417,-237],[-234,-300],[-377,-124],[43,-217],[89,-164],[-110,201],[-296,209]].map(([x,y])=>({x,y,left:-20,right:20,top:-20,bottom:20}))];
+ const fit=fitMapLocations(points,dims);
+ for(const point of points) {
+  const o=locationOffset(point,fit,2400);
+  assert.ok(width/2+o.x+point.left>=16-.001);
+  assert.ok(width/2+o.x+point.right<=width-16+.001);
+  assert.ok(height/2+o.y+point.top>=80-.001);
+  assert.ok(height/2+o.y+point.bottom<=height-120+.001);
+ }
+}
+console.log('Food framing: all seven places and venue fit the mobile control/tab insets.');

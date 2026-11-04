@@ -300,3 +300,10 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .travel-food .food-marker{left:-20px;top:-20px;width:40px;height:40px;padding:8px;display:grid;place-items:center;border-radius:50%;background:#fa4f1f}
 .food-marker span{display:block;width:24px;height:24px;background:#111;mask:url(../assets/travel-guide/food-marker.svg) center/contain no-repeat;-webkit-mask:url(../assets/travel-guide/food-marker.svg) center/contain no-repeat}
 #cosmic-kitchen-name{max-width:177px}
+
+@media(max-width:600px){
+  .transport-info{padding:16px;gap:16px;font-size:14px}
+  .transport-info h3,.transport-duration{font-size:18px}
+  .transport-method{gap:12px;padding-top:16px}
+  .transport-method h4{font-size:14px}
+}

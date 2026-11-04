@@ -175,16 +175,49 @@ function splitLetters(element, { roll = false, reveal = false, lines = false } =
   }
   element.replaceChildren(fragment);
 }
+// Keep the hover motion on one track, independent of the drawer's letter entrance.
+function prepareWholeRoll(element, reveal=false) {
+  const label=element.textContent.replace(/\s+/g,' ').trim();
+  element.setAttribute('aria-label',label);
+  element.classList.add('whole-roll-link');
+  const clip=document.createElement('span');
+  clip.className='whole-roll-mask';
+  clip.setAttribute('aria-hidden','true');
+  const track=document.createElement('span');
+  track.className='whole-roll-track';
+  const copy=document.createElement('span');
+  copy.className='whole-roll-copy';
+  if (reveal) {
+    let index=0;
+    label.split(' ').forEach((word,wordIndex)=>{
+      if (wordIndex) copy.append(' ');
+      const span=document.createElement('span');
+      span.className='menu-reveal-word';
+      span.textContent=word;
+      splitLetters(span,{reveal:true});
+      span.querySelectorAll('.letter-mask').forEach(mask=>{
+        mask.style.setProperty('--char-index',index);
+        mask.style.setProperty('--letter-index',index++);
+      });
+      copy.append(span);
+    });
+  } else copy.textContent=label;
+  const duplicate=copy.cloneNode(true);
+  duplicate.classList.add('whole-roll-duplicate');
+  track.append(copy,duplicate);
+  clip.append(track);
+  element.replaceChildren(clip);
+}
 async function animateText() {
   await document.fonts.ready;
   for (const element of document.querySelectorAll('#championship-title, .event-date')) {
     splitLetters(element, { reveal: true, lines: true });
     element.classList.add('is-ready');
   }
-  document.querySelectorAll('.hero-nav a').forEach(link => splitLetters(link, { roll: true }));
+  document.querySelectorAll('.hero-nav a,.price-link').forEach(link => prepareWholeRoll(link));
   document.querySelectorAll('.panel-nav a').forEach((link, row) => {
     link.style.setProperty('--row-index', row);
-    splitLetters(link, { roll: true, reveal: true });
+    prepareWholeRoll(link,true);
   });
 }
 animateText();

@@ -47,7 +47,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 @keyframes letter-reveal{from{transform:translateY(120%)}to{transform:translateY(0)}}
 .roll-letter{position:relative;transition:transform .35s cubic-bezier(.65,0,.35,1);transition-delay:calc(var(--char-index) * .02s)}
 .roll-letter::after{content:attr(data-char);position:absolute;top:120%;left:0}
-.hero-nav a,.panel-nav a{white-space:nowrap}
+.hero-nav a{white-space:nowrap}.panel-nav a{max-width:100%;white-space:normal}
 .hero-nav a:focus-visible .roll-letter,.panel-nav a:focus-visible .roll-letter{transform:translateY(-120%)}
 @media(hover:hover){.hero-nav a:hover .roll-letter,.panel-nav a:hover .roll-letter{transform:translateY(-120%)}}
 .panel-nav .reveal-letter{transform:translateY(120%)}
@@ -312,3 +312,22 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 /* Keep the Info panel rendered while fading out, just like location tooltips. */
 .transport-info{opacity:0;visibility:hidden;transform:translateY(8px);pointer-events:none;transition:opacity .2s ease-in-out,transform .2s ease-in-out,visibility .2s}
 .transport-info:not([hidden]){opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+
+/* Whole-label hover roll. Cloned text keeps identical wrapping in both copies. */
+.whole-roll-link{transition:color .3s ease}
+.whole-roll-mask{display:block;overflow:hidden;padding:.16em 0;margin:-.16em 0}
+.whole-roll-track{--roll-gap:.32em;position:relative;display:block;transition:transform .3s ease}
+.whole-roll-copy{display:block}
+.whole-roll-duplicate{position:absolute;left:0;top:calc(100% + var(--roll-gap));width:100%}
+.menu-reveal-word{display:inline-block;white-space:nowrap}
+.whole-roll-link:focus-visible{color:#fa4f1f}
+.whole-roll-link:focus-visible .whole-roll-track{transform:translateY(calc(-100% - var(--roll-gap)))}
+@media(hover:hover){
+  .whole-roll-link:hover{color:#fa4f1f}
+  .whole-roll-link:hover .whole-roll-track{transform:translateY(calc(-100% - var(--roll-gap)))}
+}
+.price-link.whole-roll-link{text-decoration:none}
+.price-link .whole-roll-copy{text-decoration:underline;text-underline-offset:.12em}
+@media(prefers-reduced-motion:reduce){.whole-roll-track{transform:none!important}}
+
+.panel-nav{max-width:100%;min-width:0}

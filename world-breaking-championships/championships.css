@@ -289,7 +289,8 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .map-info-toggle{position:absolute;top:24px;right:24px;z-index:3}
 .map-info-toggle span{mask-image:url(../assets/travel-guide/info.svg);-webkit-mask-image:url(../assets/travel-guide/info.svg)}
 .transport-info{position:absolute;right:24px;top:80px;width:520px;max-width:calc(100% - 48px);max-height:calc(100% - 104px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:24px;display:flex;flex-direction:column;gap:24px;background:white;color:#111;border-radius:8px;z-index:4;cursor:default;user-select:text;-webkit-user-select:text;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
-.transport-info[hidden],.map-info-toggle[hidden]{display:none}
+.transport-info[hidden]{display:flex}
+.map-info-toggle[hidden]{display:none}
 .transport-info h3{margin:0;font-size:24px;font-weight:500;line-height:1.2;letter-spacing:-.04em;flex:none}
 .transport-method{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:24px;border-top:1px solid #111;flex:none}
 .transport-method h4{margin:0;padding:4px 8px;border-radius:4px;background:#111;color:white;font-size:16px;font-weight:400;line-height:1.2;letter-spacing:-.04em}
@@ -307,3 +308,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .transport-method{gap:12px;padding-top:16px}
   .transport-method h4{font-size:14px}
 }
+
+/* Keep the Info panel rendered while fading out, just like location tooltips. */
+.transport-info{opacity:0;visibility:hidden;transform:translateY(8px);pointer-events:none;transition:opacity .2s ease-in-out,transform .2s ease-in-out,visibility .2s}
+.transport-info:not([hidden]){opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}

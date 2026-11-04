@@ -71,6 +71,8 @@ function showInfo(open) {
   open = open && category==='transport';
   if (open) showTooltip(false);
   info.hidden = !open;
+  info.inert = !open;
+  info.setAttribute('aria-hidden',String(!open));
   infoToggle.setAttribute('aria-expanded',String(open));
 }
 infoToggle.addEventListener('click',()=>showInfo(info.hidden));

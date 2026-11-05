@@ -447,3 +447,30 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 
 .competitors-crews-icon::before{mask-image:url(../assets/competitors/crews-icon.svg);-webkit-mask-image:url(../assets/competitors/crews-icon.svg)}
 .competitors-winners-icon::before{mask-image:url(../assets/competitors/winners-icon.svg);-webkit-mask-image:url(../assets/competitors/winners-icon.svg)}
+
+/* Contact footer shares the whole-label link roll and pill button fill. */
+.contact{--contact-unit:calc(100vw / 1920);padding:calc(120 * var(--contact-unit)) var(--inset);background:white;color:#111;scroll-margin-top:var(--header-height)}
+.contact h2{margin:0 0 calc(60 * var(--contact-unit));font-size:calc(161 * var(--contact-unit));font-weight:400;line-height:1;letter-spacing:-.07em}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"nav socials" "nav credit";column-gap:20px;row-gap:24px}
+.footer-nav{grid-area:nav;display:flex;flex-direction:column;gap:12px;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
+.footer-nav a{display:block;border-top:1px solid #111;padding-top:12px}
+.contact-socials{grid-area:socials;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;align-items:flex-start;justify-content:flex-end}
+.contact-social{font-size:16px;height:48px;min-width:0;gap:12px;padding-left:24px;background:#f4f4f4;white-space:nowrap}
+.contact-social .menu-icon{width:40px;height:40px}
+.contact-social .menu-icon::before{width:24px;height:24px}
+.contact-mail-icon::before{mask-image:url(../assets/contact/mail.svg);-webkit-mask-image:url(../assets/contact/mail.svg)}
+.contact-instagram-icon::before{mask-image:url(../assets/contact/instagram.svg);-webkit-mask-image:url(../assets/contact/instagram.svg)}
+.contact-credit{grid-area:credit;align-self:end;border-top:1px solid #111;padding-top:12px;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em;text-align:right;transition:color .3s ease}
+.contact-credit:is(:hover,:focus-visible){color:#fa4f1f}
+@media(max-width:1200px){
+  .contact{padding:120px var(--inset)}
+  .contact h2{font-size:100px;letter-spacing:-.06em;max-width:640px;margin-bottom:60px}
+}
+@media(max-width:600px){
+  .contact{padding:100px 16px}
+  .contact h2{font-size:clamp(36px,10.9vw,48px);margin-bottom:48px}
+  .contact-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"socials" "nav" "credit";gap:48px}
+  .contact-socials{justify-content:flex-start}
+  .contact-credit{text-align:left}
+}
+@media(max-width:380px){.contact-social{font-size:14px;padding-left:16px;gap:8px}}

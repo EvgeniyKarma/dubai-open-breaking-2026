@@ -114,9 +114,7 @@ function afterClose(event) {
   if (navigationTarget) {
     const hash = navigationTarget;
     navigationTarget = null;
-    const target = document.querySelector(hash);
-    history.pushState(null, '', hash);
-    target?.scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    navigateToSection(hash);
   }
 }
 toggles.forEach(button => button.addEventListener('click', () => openDialog(menu, button)));
@@ -130,10 +128,22 @@ for (const dialog of [menu, price, formatPopup]) {
   dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
   dialog.addEventListener('close', afterClose);
 }
-document.querySelectorAll('.panel-nav a').forEach(link => link.addEventListener('click', event => {
+// One navigation path for hero, footer, sticky title and the drawer.
+// Explicit behavior keeps body-lock restoration immediate while anchors glide.
+function navigateToSection(hash) {
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return;
+  history.pushState(null, '', hash);
+  target.scrollIntoView({behavior: reducedMotion.matches ? 'instant' : 'smooth'});
+}
+document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (!document.getElementById(link.hash.slice(1))) return;
   event.preventDefault();
-  navigationTarget = link.hash;
-  closeDialog(menu);
+  if (link.closest('.panel-nav')) {
+    navigationTarget = link.hash;
+    closeDialog(menu);
+  } else navigateToSection(link.hash);
 }));
 
 // Separate wrappers let the entrance reveal and hover roll run independently.
@@ -214,7 +224,7 @@ async function animateText() {
     splitLetters(element, { reveal: true, lines: true });
     element.classList.add('is-ready');
   }
-  document.querySelectorAll('.hero-nav a,.price-link').forEach(link => prepareWholeRoll(link));
+  document.querySelectorAll('.hero-nav a,.footer-nav a,.price-link').forEach(link => prepareWholeRoll(link));
   document.querySelectorAll('.panel-nav a').forEach((link, row) => {
     link.style.setProperty('--row-index', row);
     prepareWholeRoll(link,true);

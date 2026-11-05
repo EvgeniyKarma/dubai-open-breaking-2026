@@ -9,9 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261104-mobile-hero-alternative">
-  <script src="championships.js?v=20261104-mobile-hero-alternative" defer></script>
-  <script type="module" src="travel-map.js?v=20261104-mobile-hero-alternative"></script>
+  <link rel="stylesheet" href="championships.css?v=20261105-lineup-final">
+  <script src="championships.js?v=20261105-lineup-final" defer></script>
+  <script src="lineup.js?v=20261105-lineup-final" defer></script>
+  <script type="module" src="travel-map.js?v=20261105-lineup-final"></script>
 </head>
 <body>
   <main>
@@ -121,6 +122,76 @@
             </div>
           </div>
         </article>
+      </div>
+    </section>
+    <section class="lineup" id="lineup" aria-labelledby="lineup-title">
+      <div class="lineup-header">
+        <div class="lineup-intro"><h2 id="lineup-title" data-schedule-text>Meet the Lineup</h2><p data-schedule-text>Get to know the judges, DJs, and hosts bringing Dubai Open Breaking 2026 to life.</p></div>
+        <div class="lineup-tabs" role="tablist" aria-label="Lineup categories">
+          <button class="menu-toggle lineup-tab" type="button" role="tab" id="lineup-judges-tab" aria-controls="lineup-judges" aria-selected="true">Judges<span class="menu-icon lineup-judges-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle lineup-tab" type="button" role="tab" id="lineup-hosts-tab" aria-controls="lineup-hosts" aria-selected="false" tabindex="-1">DJs &amp; Hosts<span class="menu-icon lineup-hosts-icon" aria-hidden="true"></span></button>
+        </div>
+      </div>
+      <div class="lineup-carousel" role="region" aria-label="Lineup cards" aria-roledescription="carousel">
+        <div class="lineup-rail" id="lineup-judges" role="tabpanel" aria-labelledby="lineup-judges-tab" tabindex="0">
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/tony-rock.jpg" width="960" height="1200" alt="Tony Rock" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Russia</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Tony Rock</p><p class="lineup-detail" data-lineup-text>Top Nine</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/machine.jpg" width="960" height="1200" alt="Machine" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">USA</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Machine</p><p class="lineup-detail" data-lineup-text>Rock Force Crew, PT, L.O.D.B Crew</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/lil-g.jpg" width="960" height="1200" alt="Lil G" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Venezuela</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Lil G</p><p class="lineup-detail" data-lineup-text>Vinotinto, Red Bull BC One Allstar</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/physicx.jpg" width="960" height="1200" alt="Physicx" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">South Korea</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Physicx</p><p class="lineup-detail" data-lineup-text>Brother Green, Rivers Crew</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/sarah-bee.jpg" width="960" height="1200" alt="Sarah Bee" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Algeria</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Sarah Bee</p><p class="lineup-detail" data-lineup-text>Zamounda Crew</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/storm.jpg" width="960" height="1200" alt="Storm" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Germany</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Storm</p><p class="lineup-detail" data-lineup-text>Battle Squad</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/to-be-announced.jpg" width="960" height="1200" alt="To be announced" loading="lazy" decoding="async" draggable="false"></div>
+            <figcaption><p class="lineup-name" data-lineup-text>To be announced</p></figcaption>
+          </figure>
+        </div>
+        <div class="lineup-rail" id="lineup-hosts" role="tabpanel" aria-labelledby="lineup-hosts-tab" tabindex="0" hidden>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/fleg.jpg" width="960" height="1200" alt="Fleg" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">USA</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Fleg</p><p class="lineup-detail" data-lineup-text>DJ</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/nobunaga.jpg" width="960" height="1200" alt="Nobunaga" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Netherlands</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Nobunaga</p><p class="lineup-detail" data-lineup-text>DJ</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/one-up.jpg" width="960" height="1200" alt="One Up" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">France</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>One Up</p><p class="lineup-detail" data-lineup-text>DJ</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/leg1oner.jpg" width="960" height="1200" alt="Leg1oner" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Russia</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Leg1oner</p><p class="lineup-detail" data-lineup-text>DJ</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/south-scream.jpg" width="960" height="1200" alt="South Scream" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Russia</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>South Scream</p><p class="lineup-detail" data-lineup-text>Host / DJ</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/lineup/redchild.jpg" width="960" height="1200" alt="Redchild" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Germany</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Redchild</p><p class="lineup-detail" data-lineup-text>Host</p></figcaption>
+          </figure>
+        </div>
+        <button class="lineup-arrow lineup-prev" type="button" aria-label="Previous lineup card" hidden><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
+        <button class="lineup-arrow lineup-next" type="button" aria-label="Next lineup card"><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
+        <p class="lineup-status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </section>
     <section class="judges" hidden id="judges" aria-labelledby="judges-title">

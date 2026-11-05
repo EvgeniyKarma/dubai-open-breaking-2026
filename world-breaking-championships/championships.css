@@ -332,6 +332,65 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 
 .panel-nav{max-width:100%;min-width:0}
 
+/* Lineup: finite native carousel, separate image and caption reveal timelines. */
+.lineup{--lineup-unit:calc(100vw / 1920);--lineup-card:calc(400 * var(--lineup-unit));--lineup-gap:calc(60 * var(--lineup-unit));padding:calc(120 * var(--lineup-unit)) 0;background:#111;color:white;scroll-margin-top:var(--header-height)}
+.lineup-header{display:flex;align-items:flex-end;gap:80px;padding:0 var(--inset);margin-bottom:calc(60 * var(--lineup-unit))}
+.lineup-intro{flex:1;min-width:0;display:flex;flex-direction:column;gap:24px}
+.lineup h2{font-size:calc(120 * var(--lineup-unit));font-weight:400;line-height:1;letter-spacing:-.06em}
+.lineup-intro>p{font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.04em}
+.lineup-tabs{display:flex;gap:12px;flex-shrink:0}
+.lineup-tab{background:white;min-width:0;white-space:nowrap}
+.lineup-tab[aria-selected=true]{background:#fa4f1f}
+.lineup-judges-icon::before{mask-image:url(../assets/lineup/judges-icon.svg);-webkit-mask-image:url(../assets/lineup/judges-icon.svg)}
+.lineup-hosts-icon::before{mask-image:url(../assets/lineup/hosts-icon.svg);-webkit-mask-image:url(../assets/lineup/hosts-icon.svg)}
+.lineup-carousel{position:relative}
+.lineup-rail{display:flex;gap:var(--lineup-gap);overflow-x:auto;overflow-y:hidden;padding:0 var(--inset) 8px;scroll-padding-inline:var(--inset);scroll-snap-type:x mandatory;overscroll-behavior-x:contain;position:relative;outline-offset:-3px;touch-action:pan-x pan-y pinch-zoom}
+.lineup-rail[hidden],.lineup-arrow[hidden]{display:none}
+.lineup-card{margin:0;flex:0 0 var(--lineup-card);min-width:0;scroll-snap-align:start}
+.lineup-artwork{aspect-ratio:4/5;position:relative;overflow:hidden;background:#fa4f1f}
+.lineup-artwork>img{display:block;width:100%;height:100%;object-fit:cover}
+.lineup-country{position:absolute;left:16px;top:16px;padding:2px 8px;border-radius:20px;background:#fa4f1f;color:#111;font-size:14px;line-height:1.1;letter-spacing:-.04em}
+.lineup-card figcaption{display:flex;flex-direction:column;gap:4px;margin-top:16px;font-weight:400;line-height:1.1;letter-spacing:-.04em}
+.lineup-name{font-size:24px}
+.lineup-detail{font-size:16px;color:#fa4f1f}
+.lineup-word{display:inline-block;white-space:nowrap}
+.lineup-letter{display:inline-block}
+.js .lineup-artwork>img{clip-path:inset(0 100% 0 0)}
+.js .lineup-country{opacity:0}
+.js .lineup-letter{transform:translateY(120%)}
+.js .lineup-card.is-revealed .lineup-artwork>img{animation:lineup-image-reveal .8s ease-in-out both}
+.js .lineup-card.is-revealed .lineup-country{animation:lineup-badge-reveal .3s ease-in-out .8s both}
+.js .lineup-card.is-revealed .lineup-letter{animation:letter-reveal .65s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.8s + var(--char-index) * .018s)}
+@keyframes lineup-image-reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+@keyframes lineup-badge-reveal{from{opacity:0}to{opacity:1}}
+.lineup-arrow{position:absolute;top:calc(var(--lineup-card) * .625);transform:translateY(-50%);z-index:2;display:grid;place-items:center;width:40px;height:40px;padding:8px;border-radius:50%;background:white;color:#111;transition:background .3s ease-in-out}
+.lineup-arrow img{display:block;width:24px;height:24px}
+.lineup-prev{left:var(--inset)}
+.lineup-prev img{transform:rotate(180deg)}
+.lineup-next{right:var(--inset)}
+.lineup-arrow:is(:hover,:focus-visible){background:#fa4f1f}
+.lineup-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:1200px){
+  .lineup{--lineup-card:400px;--lineup-gap:60px;padding:120px 0}
+  .lineup-header{flex-direction:column;align-items:flex-start;gap:48px;margin-bottom:48px}
+  .lineup h2{font-size:clamp(64px,9.765625vw,100px)}
+}
+@media(max-width:600px){
+  .lineup{--lineup-card:min(300px,calc(100vw - 32px));padding:100px 0}
+  .lineup-header{gap:32px;margin-bottom:48px}
+  .lineup h2{font-size:clamp(36px,10.9vw,48px)}
+  .lineup-tabs{gap:8px}
+  .lineup-tab{gap:8px}
+  .lineup-judges-icon::before{mask-image:url(../assets/lineup/judges-mobile-icon.svg);-webkit-mask-image:url(../assets/lineup/judges-mobile-icon.svg)}
+  .lineup-hosts-icon::before{mask-image:url(../assets/lineup/hosts-mobile-icon.svg);-webkit-mask-image:url(../assets/lineup/hosts-mobile-icon.svg)}
+  .lineup-detail{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .js .lineup-artwork>img{clip-path:none}
+  .js .lineup-country{opacity:1}
+  .js .lineup-letter{transform:none}
+}
+
 /* Mobile hero keeps design-sized controls and copy instead of scaling every rem
    against viewport height. Only the main title and spacing adapt when needed. */
 .hero-nav{margin-left:auto}

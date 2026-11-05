@@ -449,7 +449,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .competitors-winners-icon::before{mask-image:url(../assets/competitors/winners-icon.svg);-webkit-mask-image:url(../assets/competitors/winners-icon.svg)}
 
 /* Contact footer shares the whole-label link roll and pill button fill. */
-.contact{--contact-unit:calc(100vw / 1920);padding:calc(120 * var(--contact-unit)) var(--inset);background:white;color:#111;scroll-margin-top:var(--header-height)}
+.contact{--contact-unit:calc(100vw / 1920);padding:calc(120 * var(--contact-unit)) var(--inset) calc(60 * var(--contact-unit));background:white;color:#111;scroll-margin-top:var(--header-height)}
 .contact h2{margin:0 0 calc(60 * var(--contact-unit));font-size:calc(161 * var(--contact-unit));font-weight:400;line-height:1;letter-spacing:-.07em}
 .contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"nav socials" "nav credit";column-gap:20px;row-gap:24px}
 .footer-nav{grid-area:nav;display:flex;flex-direction:column;gap:12px;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
@@ -465,11 +465,11 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .contact-credit{display:block;padding-top:13px;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em;text-align:right;transition:color .3s ease}
 .contact-credit:is(:hover,:focus-visible){color:#fa4f1f}
 @media(max-width:1200px){
-  .contact{padding:120px var(--inset)}
+  .contact{padding:120px var(--inset) 60px}
   .contact h2{font-size:100px;letter-spacing:-.06em;max-width:640px;margin-bottom:60px}
 }
 @media(max-width:600px){
-  .contact{padding:100px 16px}
+  .contact{padding:100px 16px 50px}
   .contact h2{font-size:clamp(36px,10.9vw,48px);margin-bottom:48px}
   .contact-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"socials" "nav" "credit";gap:48px}
   .contact-socials{justify-content:flex-start}

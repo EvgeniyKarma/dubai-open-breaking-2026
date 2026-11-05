@@ -224,7 +224,7 @@ async function animateText() {
     splitLetters(element, { reveal: true, lines: true });
     element.classList.add('is-ready');
   }
-  document.querySelectorAll('.hero-nav a,.footer-nav a,.price-link').forEach(link => prepareWholeRoll(link));
+  document.querySelectorAll('.hero-nav a,.footer-nav a,.contact-credit,.price-link').forEach(link => prepareWholeRoll(link));
   document.querySelectorAll('.panel-nav a').forEach((link, row) => {
     link.style.setProperty('--row-index', row);
     prepareWholeRoll(link,true);

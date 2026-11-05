@@ -336,6 +336,8 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .lineup{--lineup-unit:calc(100vw / 1920);--lineup-card:calc(400 * var(--lineup-unit));--lineup-gap:calc(60 * var(--lineup-unit));padding:calc(120 * var(--lineup-unit)) 0;background:#111;color:white;scroll-margin-top:var(--header-height)}
 .lineup-header{display:flex;align-items:flex-end;gap:80px;padding:0 var(--inset);margin-bottom:calc(60 * var(--lineup-unit))}
 .lineup-intro{flex:1;min-width:0;display:flex;flex-direction:column;gap:24px}
+#lineup-title{display:flow-root}
+#lineup-title .letter-mask,#lineup-title .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
 .lineup h2{font-size:calc(120 * var(--lineup-unit));font-weight:400;line-height:1;letter-spacing:-.06em}
 .lineup-intro>p{font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.04em}
 .lineup-tabs{display:flex;gap:12px;flex-shrink:0}
@@ -362,10 +364,15 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .js .lineup-artwork>img{clip-path:inset(0 100% 0 0)}
 .js .lineup-country{opacity:0}
 .js .lineup-letter{transform:translateY(120%)}
+.js .lineup-card.is-revealed .lineup-artwork{animation:lineup-mask-clear .8s step-end both}
 .js .lineup-card.is-revealed .lineup-artwork>img{animation:lineup-image-reveal .8s ease-in-out both}
 .js .lineup-card.is-revealed .lineup-country{animation:lineup-badge-reveal .3s ease-in-out .8s both}
 .js .lineup-card.is-revealed .lineup-letter{animation:letter-reveal .65s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.8s + var(--char-index) * .018s)}
-@keyframes lineup-image-reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+/* Extend the completed clip beyond the image and clear the orange underlay:
+   fractional desktop widths
+   must not retain an antialiased orange seam at the poster edge. */
+@keyframes lineup-image-reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(-1px)}}
+@keyframes lineup-mask-clear{from{background-color:#fa4f1f}to{background-color:transparent}}
 @keyframes lineup-badge-reveal{from{opacity:0}to{opacity:1}}
 .lineup-arrow{position:absolute;top:calc(var(--lineup-card) * .625);transform:translateY(-50%);z-index:2;display:grid;place-items:center;width:40px;height:40px;padding:8px;border-radius:50%;background:white;color:#111;transition:background .3s ease-in-out}
 .lineup-arrow img{display:block;width:24px;height:24px}
@@ -390,6 +397,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .lineup-detail{font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){
+  .js .lineup-artwork{background:transparent}
   .js .lineup-artwork>img{clip-path:none}
   .js .lineup-country{opacity:1}
   .js .lineup-letter{transform:none}

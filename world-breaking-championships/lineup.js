@@ -60,32 +60,43 @@
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
 
-  const revealObserver = new IntersectionObserver(entries => {
-    const entering = entries.filter(entry => entry.isIntersecting && !entry.target.closest('[hidden]'));
-    entering.sort((a, b) => a.boundingClientRect.left - b.boundingClientRect.left);
-    for (const entry of entries) {
-      if (!entry.isIntersecting) {
-        clearTimeout(timers.get(entry.target));
-        timers.delete(entry.target);
-        entry.target.classList.remove('is-revealed');
+  let revealFrame = 0;
+  function canReveal(card) {
+    if (card.closest('[hidden]')) return false;
+    const bounds = card.getBoundingClientRect();
+    const railBounds = rails[selected].getBoundingClientRect();
+    // A glimpse at either edge stays orange. Vertical page scrolling may
+    // reveal the poster before its caption reaches the viewport.
+    return bounds.left >= Math.max(0, railBounds.left) - 1 &&
+      bounds.right <= Math.min(innerWidth, railBounds.right) + 1 &&
+      bounds.top < innerHeight - 100 && bounds.bottom > 0;
+  }
+  function revealVisibleCards() {
+    revealFrame = 0;
+    let order = 0;
+    rails[selected].querySelectorAll('.lineup-card').forEach(card => {
+      if (card.classList.contains('is-revealed')) return;
+      if (!canReveal(card)) {
+        clearTimeout(timers.get(card));
+        timers.delete(card);
+        return;
       }
-    }
-    entering.forEach((entry, index) => {
-      clearTimeout(timers.get(entry.target));
+      if (timers.has(card)) return;
       const timer = setTimeout(async () => {
-        const image = entry.target.querySelector('img');
+        const image = card.querySelector('img');
         image.loading = 'eager';
-        // Keep the orange mask until the incoming poster is decoded, including
-        // when a mobile connection loads a card after its first intersection.
-        try { if (!image.complete || !image.naturalWidth) await image.decode(); } catch { /* Preserve the caption if an image fails. */ }
-        if (timers.get(entry.target) !== timer || entry.target.closest('[hidden]')) return;
-        entry.target.classList.add('is-revealed');
-        timers.delete(entry.target);
-      }, reduced.matches ? 0 : index * 150);
-      timers.set(entry.target, timer);
+        try { if (!image.complete || !image.naturalWidth) await image.decode(); } catch { /* Keep captions available if a poster fails. */ }
+        if (timers.get(card) !== timer) return;
+        if (!canReveal(card)) { timers.delete(card); return; }
+        card.classList.add('is-revealed');
+        timers.delete(card);
+      }, reduced.matches ? 0 : order++ * 150);
+      timers.set(card, timer);
     });
-  }, {threshold: .01, rootMargin: '0px 0px -100px 0px'});
-  section.querySelectorAll('.lineup-card').forEach(card => revealObserver.observe(card));
+  }
+  function queueReveal() {
+    if (!revealFrame) revealFrame = requestAnimationFrame(revealVisibleCards);
+  }
 
   function selectTab(index, focus = false) {
     if (index !== selected) {
@@ -97,12 +108,11 @@
         rail.hidden = i !== index;
         rail.querySelectorAll('.lineup-card').forEach(card => {
           card.classList.remove('is-revealed');
-          revealObserver.unobserve(card);
         });
       });
       selected = index;
       rails[index].scrollTo({left: 0, behavior: 'instant'});
-      rails[index].querySelectorAll('.lineup-card').forEach(card => revealObserver.observe(card));
+      queueReveal();
       tabs.forEach((tab, i) => {
         tab.setAttribute('aria-selected', String(i === index));
         tab.tabIndex = i === index ? 0 : -1;
@@ -129,6 +139,7 @@
   rails.forEach(rail => {
     rail.addEventListener('scroll', () => {
       updateControls();
+      queueReveal();
       clearTimeout(settleTimer);
       settleTimer = setTimeout(() => { destination = null; }, 150);
     }, {passive: true});
@@ -140,6 +151,9 @@
       }
     });
   });
-  new ResizeObserver(() => { destination = null; updateControls(); }).observe(section);
+  new ResizeObserver(() => { destination = null; updateControls(); queueReveal(); }).observe(section);
+  window.addEventListener('scroll', queueReveal, {passive: true});
+  window.addEventListener('resize', queueReveal, {passive: true});
   updateControls();
+  queueReveal();
 })();

@@ -341,6 +341,10 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .lineup-tabs{display:flex;gap:12px;flex-shrink:0}
 .lineup-tab{background:white;min-width:0;white-space:nowrap}
 .lineup-tab[aria-selected=true]{background:#fa4f1f}
+.lineup-tab::before{background:#fa4f1f}
+.lineup-tab:is(:hover,:focus-visible){color:#111}
+.lineup-tab:is(:hover,:focus-visible) .menu-icon{background:#111;color:white}
+.lineup-tab[aria-selected=true]::before{clip-path:inset(0 0 0 100% round 100px)}
 .lineup-judges-icon::before{mask-image:url(../assets/lineup/judges-icon.svg);-webkit-mask-image:url(../assets/lineup/judges-icon.svg)}
 .lineup-hosts-icon::before{mask-image:url(../assets/lineup/hosts-icon.svg);-webkit-mask-image:url(../assets/lineup/hosts-icon.svg)}
 .lineup-carousel{position:relative}

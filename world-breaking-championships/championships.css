@@ -336,11 +336,11 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .lineup{--lineup-unit:calc(100vw / 1920);--lineup-card:calc(400 * var(--lineup-unit));--lineup-gap:calc(60 * var(--lineup-unit));padding:calc(120 * var(--lineup-unit)) 0;background:#111;color:white;scroll-margin-top:var(--header-height)}
 .lineup-header{display:flex;align-items:flex-end;gap:80px;padding:0 var(--inset);margin-bottom:calc(60 * var(--lineup-unit))}
 .lineup-intro{flex:1;min-width:0;display:flex;flex-direction:column;gap:24px}
-#lineup-title{display:flow-root}
-#lineup-title .letter-mask,#lineup-title .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
+.lineup h2{display:flow-root}
+.lineup h2 .letter-mask,.lineup h2 .schedule-text-mask{padding:.2em .08em;margin:-.2em -.08em}
 .lineup h2{font-size:calc(120 * var(--lineup-unit));font-weight:400;line-height:1;letter-spacing:-.06em}
 .lineup-intro>p{font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.04em}
-.lineup-tabs{display:flex;gap:12px;flex-shrink:0}
+.lineup-tabs{display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap;max-width:100%}
 .lineup-tab{background:white;min-width:0;white-space:nowrap}
 .lineup-tab[aria-selected=true]{background:#fa4f1f}
 .lineup-tab::before{background:#fa4f1f}
@@ -383,6 +383,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .lineup-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media(max-width:1200px){
   .lineup{--lineup-card:400px;--lineup-gap:60px;padding:120px 0}
+  .lineup-intro{width:100%}
   .lineup-header{flex-direction:column;align-items:flex-start;gap:48px;margin-bottom:48px}
   .lineup h2{font-size:clamp(64px,9.765625vw,100px)}
 }
@@ -443,3 +444,6 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .hero-copy{top:min(calc(50% - 40px),calc(100% - 260px));gap:16px}
   #championship-title{font-size:clamp(32px,10vw,40px)}
 }
+
+.competitors-crews-icon::before{mask-image:url(../assets/competitors/crews-icon.svg);-webkit-mask-image:url(../assets/competitors/crews-icon.svg)}
+.competitors-winners-icon::before{mask-image:url(../assets/competitors/winners-icon.svg);-webkit-mask-image:url(../assets/competitors/winners-icon.svg)}

@@ -9,10 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261105-lineup-mask-edges-v2">
-  <script src="championships.js?v=20261105-lineup-mask-edges-v2" defer></script>
-  <script src="lineup.js?v=20261105-lineup-mask-edges-v2" defer></script>
-  <script type="module" src="travel-map.js?v=20261105-lineup-mask-edges-v2"></script>
+  <link rel="stylesheet" href="championships.css?v=20261105-competitors-responsive">
+  <script src="championships.js?v=20261105-competitors-responsive" defer></script>
+  <script src="lineup.js?v=20261105-competitors-responsive" defer></script>
+  <script type="module" src="travel-map.js?v=20261105-competitors-responsive"></script>
 </head>
 <body>
   <main>
@@ -191,6 +191,60 @@
         </div>
         <button class="lineup-arrow lineup-prev" type="button" aria-label="Previous lineup card" hidden><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
         <button class="lineup-arrow lineup-next" type="button" aria-label="Next lineup card"><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
+        <p class="lineup-status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+    </section>
+    <section class="lineup competitors" id="competitors" aria-labelledby="competitors-title">
+      <div class="lineup-header">
+        <div class="lineup-intro"><h2 id="competitors-title" data-schedule-text>Ready for Battle</h2><p data-schedule-text>Discover the crews and national qualifier winners bringing their skills, style, and energy to the Dubai stage.</p></div>
+        <div class="lineup-tabs" role="tablist" aria-label="Competitor categories">
+          <button class="menu-toggle lineup-tab" type="button" role="tab" id="competitors-crews-tab" aria-controls="competitors-crews" aria-selected="true">Crew Guests<span class="menu-icon competitors-crews-icon" aria-hidden="true"></span></button>
+          <button class="menu-toggle lineup-tab" type="button" role="tab" id="competitors-winners-tab" aria-controls="competitors-winners" aria-selected="false" tabindex="-1">Qualifier Winners<span class="menu-icon competitors-winners-icon" aria-hidden="true"></span></button>
+        </div>
+      </div>
+      <div class="lineup-carousel" role="region" aria-label="Competitor cards" aria-roledescription="carousel">
+        <div class="lineup-rail" id="competitors-crews" role="tabpanel" aria-labelledby="competitors-crews-tab" tabindex="0">
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/777-crew.jpg" width="960" height="1200" alt="777 Crew" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Worldwide</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>777 Crew</p><p class="lineup-detail" data-lineup-text>Crew Guests</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/elmouwahidine.jpg" width="960" height="1200" alt="Elmouwahidine" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">North Africa</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Elmouwahidine</p><p class="lineup-detail" data-lineup-text>Crew Guests</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/smag-19.jpg" width="960" height="1200" alt="Smag 19" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Europe</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Smag 19</p><p class="lineup-detail" data-lineup-text>Crew Guests</p></figcaption>
+          </figure>
+        </div>
+        <div class="lineup-rail" id="competitors-winners" role="tabpanel" aria-labelledby="competitors-winners-tab" tabindex="0" hidden>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/belarus.jpg" width="960" height="1200" alt="Flowolf / Chicken Chicks" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Belarus</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Flowolf / Chicken Chicks</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/china.jpg" width="960" height="1200" alt="TNT / Raider" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">China</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>TNT / Raider</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/indonesia.jpg" width="960" height="1200" alt="Edno / Antik" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Indonesia</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Edno / Antik</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/italy.jpg" width="960" height="1200" alt="Leo / Fat" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Italy</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Leo / Fat</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/thailand.jpg" width="960" height="1200" alt="Thunderz / Zaba" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Thailand</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Thunderz / Zaba</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+          <figure class="lineup-card">
+            <div class="lineup-artwork"><img src="../assets/competitors/turkey.jpg" width="960" height="1200" alt="Thiefox / Jazzy" loading="lazy" decoding="async" draggable="false"><span class="lineup-country">Turkey</span></div>
+            <figcaption><p class="lineup-name" data-lineup-text>Thiefox / Jazzy</p><p class="lineup-detail" data-lineup-text>Qualifier Winners</p></figcaption>
+          </figure>
+        </div>
+        <button class="lineup-arrow lineup-prev" type="button" aria-label="Previous competitor card" hidden><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
+        <button class="lineup-arrow lineup-next" type="button" aria-label="Next competitor card"><img src="../assets/lineup/next-icon.svg" width="24" height="24" alt=""></button>
         <p class="lineup-status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </section>

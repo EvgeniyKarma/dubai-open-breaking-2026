@@ -37,14 +37,24 @@ const previous={addEventListener(){}};
 const next={addEventListener(){}};
 const section={querySelectorAll:s=>s==='[role="tab"]'?tabs:s==='.lineup-rail'?rails:[],
  querySelector:s=>s==='.lineup-prev'?previous:s==='.lineup-next'?next:{}};
+// A second carousel remains below the viewport but must keep independent state.
+const otherRails = [rail(), rail()];
+otherRails[1].hidden = true;
+otherRails.forEach(r=>r.cards.forEach(c=>{c.bounds.top=2000;c.bounds.bottom=2440;}));
+const otherTabs = otherRails.map((r,i)=>({textContent:i?'Winners':'Crews',events:{},
+ addEventListener(name,fn){this.events[name]=fn;},setAttribute(){},focus(){}}));
+const otherSection={
+ querySelectorAll:s=>s==='[role="tab"]'?otherTabs:s==='.lineup-rail'?otherRails:[],
+ querySelector:()=>({addEventListener(){}}),
+};
 vm.runInNewContext(readFileSync('world-breaking-championships/lineup.js','utf8'),{
- document:{querySelector:()=>section},matchMedia:()=>({matches:false}),
+ document:{querySelectorAll:()=>[section,otherSection]},matchMedia:()=>({matches:false}),
  innerWidth:440,innerHeight:956,
  setTimeout(fn,delay){timers.set(++timerId,{fn,delay});return timerId;},
  clearTimeout(id){timers.delete(id);},
  requestAnimationFrame(fn){frames.push(fn);return frames.length;},
  ResizeObserver:class{observe(){}},
- window:{addEventListener(name,fn){windowEvents[name]=fn;}},
+ window:{addEventListener(name,fn){(windowEvents[name]??=[]).push(fn);}},
 });
 function flushFrames(){while(frames.length)frames.shift()();}
 // Keep browser timer handles available while callbacks execute.
@@ -55,6 +65,9 @@ async function runTimers(){for(const [id,t] of [...timers]){await t.fn();timers.
  await runTimers();
  assert(rails[0].cards[0].classList.contains('is-revealed'));
  assert(!rails[0].cards[1].classList.contains('is-revealed'));
+ otherTabs[1].events.click();flushFrames();
+ assert(!rails[0].hidden,'switching the second carousel must not change the first');
+ assert(!otherRails[1].hidden);
  rails[0].cards[0].bounds={left:-350,right:-50,top:200,bottom:640};
  rails[0].cards[1].bounds={left:16,right:316,top:200,bottom:640};
  rails[0].events.scroll();flushFrames();await runTimers();
@@ -73,7 +86,7 @@ async function runTimers(){for(const [id,t] of [...timers]){await t.fn();timers.
  rails[1].cards[1].bounds={left:16,right:316,top:200,bottom:640};
  rails[1].cards[1].image.complete=false;
  rails[1].cards[1].image.decode=()=>new Promise(resolve=>{decodeDone=resolve;});
- windowEvents.scroll();flushFrames();
+ windowEvents.scroll.forEach(fn=>fn());flushFrames();
  const pending=[...timers.values()].find(t=>t.delay===0);
  const decoding=pending.fn();
  tabs[0].events.click();flushFrames();
@@ -81,5 +94,6 @@ async function runTimers(){for(const [id,t] of [...timers]){await t.fn();timers.
  assert(!rails[1].cards[1].classList.contains('is-revealed'),'stale image decode cannot reveal a hidden tab');
  await runTimers();
  assert(rails[0].cards[0].classList.contains('is-revealed'),'returning to the tab replays its first card');
- console.log('Lineup reveal lifecycle: passed');
+ assert(!otherRails[1].hidden,'switching the first carousel must not reset the second');
+ console.log('Carousel reveal lifecycle and section independence: passed');
 })().catch(error=>{console.error(error);process.exitCode=1;});

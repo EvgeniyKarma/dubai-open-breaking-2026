@@ -1,6 +1,4 @@
-(() => {
-  const section = document.querySelector('#lineup');
-  if (!section) return;
+function initializeCardCarousel(section) {
   const tabs = [...section.querySelectorAll('[role="tab"]')];
   const rails = [...section.querySelectorAll('.lineup-rail')];
   const previous = section.querySelector('.lineup-prev');
@@ -156,4 +154,5 @@
   window.addEventListener('resize', queueReveal, {passive: true});
   updateControls();
   queueReveal();
-})();
+}
+document.querySelectorAll('.lineup').forEach(initializeCardCarousel);

@@ -335,7 +335,7 @@ function revealSchedule(replayVisible = false) {
   // Reveal remaining visible content at the document end,
   // even when there is not enough space below to scroll it to the line reveal threshold.
   const atPageEnd = window.scrollY + height >= document.documentElement.scrollHeight - 2;
-  for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule, .travel-guide [data-schedule-text], .lineup [data-schedule-text]')) {
+  for (const element of document.querySelectorAll('.schedule [data-schedule-text], .schedule .schedule-rule, .prize-money [data-schedule-text], .prize-money .schedule-rule, .travel-guide [data-schedule-text], .lineup [data-schedule-text], .contact [data-schedule-text], .contact .schedule-rule')) {
     if (element.classList.contains('is-revealed') || element.closest('[hidden]') || !element.getClientRects().length) continue;
     const box = element.getBoundingClientRect();
     const isLine = element.classList.contains('schedule-rule');

@@ -234,7 +234,6 @@ animateText();
 
 // Responsive schedule: accessible day tabs and independently revealed text/lines.
 const schedule = document.querySelector('.schedule');
-const scheduleMobile = matchMedia('(max-width:600px)');
 const scheduleTabs = [...document.querySelectorAll('.schedule-tab')];
 const scheduleDays = [...document.querySelectorAll('.schedule-day')];
 // Editorial headings and map labels share the same measured per-letter reveal pipeline.
@@ -309,10 +308,9 @@ function prepareScheduleText(element) {
 function syncScheduleLayout() {
   const previousScrollY = window.scrollY;
   scheduleDays.forEach((day, index) => {
-    day.hidden = scheduleMobile.matches && index !== selectedDay;
-    day.setAttribute('aria-labelledby', scheduleMobile.matches ? scheduleTabs[index].id : `schedule-date-${18 + index}`);
-    if (scheduleMobile.matches) day.setAttribute('role', 'tabpanel');
-    else day.removeAttribute('role');
+    day.hidden = index !== selectedDay;
+    day.setAttribute('aria-labelledby', scheduleTabs[index].id);
+    day.setAttribute('role', 'tabpanel');
   });
   scheduleTabs.forEach((tab, index) => {
     tab.setAttribute('aria-selected', String(index === selectedDay));
@@ -382,7 +380,6 @@ window.addEventListener('resize', () => {
   clearTimeout(scheduleResizeTimer);
   scheduleResizeTimer = setTimeout(syncScheduleLayout, 120);
 });
-scheduleMobile.addEventListener('change', syncScheduleLayout);
 syncScheduleLayout();
 document.fonts.ready.then(() => {
   scheduleReady = true;

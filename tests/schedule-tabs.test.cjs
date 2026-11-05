@@ -1,0 +1,31 @@
+const {readFileSync}=require('node:fs');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const source=readFileSync('world-breaking-championships/championships.js','utf8');
+function element(id){return{id,hidden:false,attrs:{},tabIndex:0,cleared:0,setAttribute(k,v){this.attrs[k]=v;},querySelectorAll(){return[{classList:{remove:()=>this.cleared++}}];},getBoundingClientRect(){return{};},focus(){this.focused=true;}};}
+const days=[0,1,2].map(i=>element(`day-${i}`));
+const tabs=[0,1,2].map(i=>element(`tab-${i}`));
+const frames=[];
+const context={scheduleDays:days,scheduleTabs:tabs,selectedDay:0,scheduleReady:false,scheduleFrame:0,
+ window:{scrollY:100},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},revealSchedule(){}};
+const layout=source.slice(source.indexOf('function syncScheduleLayout()'),source.indexOf('function revealSchedule('));
+const selection=source.slice(source.indexOf('function selectScheduleDay('),source.indexOf('scheduleTabs.forEach((tab, index) => {\n  tab.addEventListener'));
+vm.runInNewContext(layout+selection,context);
+context.syncScheduleLayout();
+assert.deepEqual(days.map(d=>d.hidden),[false,true,true]);
+assert(days.every(d=>d.attrs.role==='tabpanel'));
+assert.deepEqual(tabs.map(t=>t.tabIndex),[0,-1,-1]);
+context.selectScheduleDay(1,true);
+assert.deepEqual(days.map(d=>d.hidden),[true,false,true]);
+assert.equal(days[1].attrs['aria-labelledby'],tabs[1].id);
+assert(tabs[1].focused);
+assert.equal(days[0].cleared,0);
+assert.equal(days[1].cleared,1,'only the selected day resets its animation');
+context.selectScheduleDay(2);
+context.selectScheduleDay(0);
+assert.deepEqual(days.map(d=>d.hidden),[false,true,true]);
+assert.deepEqual(days.map(d=>d.cleared),[1,1,1]);
+const previous=days[0].cleared;
+context.selectScheduleDay(0);
+assert.equal(days[0].cleared,previous,'selecting the current tab does not restart animations');
+console.log('Schedule tabs on every breakpoint: passed');

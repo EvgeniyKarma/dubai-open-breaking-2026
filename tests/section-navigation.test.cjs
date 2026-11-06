@@ -9,7 +9,7 @@ const target={scrollIntoView:options=>calls.push(['scroll',options])};
 function link(hash,drawer=false){return{hash,closest:()=>drawer?{}:null,addEventListener(type,fn){this.click=fn;}};}
 const links=[link('#schedule'),link('#lineup'),link('#contact',true),link('#top')];
 const context={
- reducedMotion:{matches:false},navigationTarget:null,menu:{},
+ reducedMotion:{matches:false},navigationTarget:null,menu:{},closing:false,
  document:{getElementById:id=>['schedule','lineup','contact','top'].includes(id)?target:null,querySelectorAll:()=>links},
  history:{pushState:(_state,_title,hash)=>calls.push(['hash',hash])},
  closeDialog:()=>calls.push(['close']),

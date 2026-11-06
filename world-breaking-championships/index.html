@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="championships.css?v=20261106-page-polish">
-  <script src="../typography.js?v=20261106-page-polish" defer></script>
-  <script src="championships.js?v=20261106-page-polish" defer></script>
-  <script src="lineup.js?v=20261106-page-polish" defer></script>
-  <script type="module" src="travel-map.js?v=20261106-page-polish"></script>
+  <link rel="stylesheet" href="championships.css?v=20261106-menu-expanded">
+  <script src="../typography.js?v=20261106-menu-expanded" defer></script>
+  <script src="championships.js?v=20261106-menu-expanded" defer></script>
+  <script src="lineup.js?v=20261106-menu-expanded" defer></script>
+  <script type="module" src="travel-map.js?v=20261106-menu-expanded"></script>
 </head>
 <body>
   <main>
@@ -489,7 +489,21 @@
   <dialog autofocus class="menu-dialog" id="page-menu" aria-label="Page navigation">
     <div class="menu-panel" tabindex="-1">
       <button class="menu-toggle close-menu" aria-label="Close menu">Close<span class="menu-icon close-icon" aria-hidden="true"></span></button>
-      <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#lineup">Lineup</a><a href="#competitors">Competitors</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
+      <div class="menu-content">
+        <nav class="panel-nav" aria-label="Page sections"><a href="#schedule">Schedule</a><a href="#lineup">Lineup</a><a href="#competitors">Competitors</a><a href="#competition-format">Competition format</a><a href="#prize-money">Prize money</a><a href="#travel-guide">Travel guide</a><a href="#contact">Contact</a></nav>
+        <div class="menu-socials" aria-label="Contact and social media">
+          <a class="menu-toggle contact-social menu-social" href="mailto:info@dubaiopenbreaking.com">info@dubaiopenbreaking.com<span class="menu-icon contact-mail-icon" aria-hidden="true"></span></a>
+          <a class="menu-toggle contact-social menu-social" href="https://www.instagram.com/dubai_openbreaking/" target="_blank" rel="noopener noreferrer">DOB instagram<span class="menu-icon contact-instagram-icon" aria-hidden="true"></span></a>
+          <a class="menu-toggle contact-social menu-social" href="https://www.instagram.com/wfadsamericaofficial/" target="_blank" rel="noopener noreferrer">WFADS instagram<span class="menu-icon contact-instagram-icon" aria-hidden="true"></span></a>
+        </div>
+        <div class="menu-registration-group">
+          <a class="menu-registration" href="https://dubaiopenbreaking.com/signup/?tab=adult" target="_blank" rel="noopener noreferrer">
+            <span class="menu-registration-title">Participant registration</span>
+            <span class="signup menu-signup">SignUp<span class="menu-signup-icon" aria-hidden="true"></span></span>
+          </a>
+          <button class="menu-price-link" type="button" aria-haspopup="dialog" aria-controls="price-popup" aria-expanded="false" data-open-price>Registration Price</button>
+        </div>
+      </div>
     </div>
   </dialog>
   <dialog autofocus class="menu-dialog price-dialog" id="price-popup" aria-labelledby="price-title">

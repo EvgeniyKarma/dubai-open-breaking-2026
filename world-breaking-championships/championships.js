@@ -14,6 +14,7 @@ let activeDialog;
 let closing = false;
 let navigationTarget;
 let drawerAnimation;
+let queuedDialog;
 
 function updateHeader() {
   scrollFrame = 0;
@@ -43,7 +44,7 @@ function openDialog(dialog, trigger) {
   document.body.style.top = `-${lockedY}px`;
   document.body.style.width = '100%';
   document.body.style.paddingRight = `${scrollbarWidth}px`;
-  const scrollContent = dialog.querySelector('.format-panel-content');
+  const scrollContent = dialog.querySelector('.format-panel-content,.menu-content');
   const panel = dialog.querySelector('.menu-panel');
   // Keep the native dialog's autofocus on its stationary viewport, rather than
   // asking the browser to reveal a focusable panel that is still offscreen.
@@ -110,6 +111,12 @@ function afterClose(event) {
   toggles.forEach(button => button.setAttribute('aria-expanded', 'false'));
   if (event.target.id) document.querySelectorAll(`[aria-controls="${event.target.id}"]`).forEach(button => button.setAttribute('aria-expanded', 'false'));
   updateHeader();
+  if (queuedDialog) {
+    const next = queuedDialog;
+    queuedDialog = null;
+    openDialog(next.dialog, next.trigger);
+    return;
+  }
   opener?.focus({ preventScroll: true });
   if (navigationTarget) {
     const hash = navigationTarget;
@@ -119,7 +126,15 @@ function afterClose(event) {
 }
 toggles.forEach(button => button.addEventListener('click', () => openDialog(menu, button)));
 document.querySelector('.close-menu').addEventListener('click', () => closeDialog(menu));
-document.querySelector('[data-open-price]').addEventListener('click', event => openDialog(price, event.currentTarget));
+document.querySelectorAll('[data-open-price]').forEach(button => button.addEventListener('click', event => {
+  if (closing) return;
+  if (activeDialog === menu) {
+    // Replace the drawer only after its body lock is released. Return focus
+    // to the original Menu button, rather than a button in a closed dialog.
+    queuedDialog = {dialog:price, trigger:opener};
+    closeDialog(menu);
+  } else openDialog(price, event.currentTarget);
+}));
 document.querySelector('.close-price').addEventListener('click', () => closeDialog(price));
 document.querySelector('.format-learn').addEventListener('click', event => openDialog(formatPopup, event.currentTarget));
 document.querySelector('.close-format').addEventListener('click', () => closeDialog(formatPopup));
@@ -141,6 +156,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener(
   if (!document.getElementById(link.hash.slice(1))) return;
   event.preventDefault();
   if (link.closest('.panel-nav')) {
+    if (closing) return;
     navigationTarget = link.hash;
     closeDialog(menu);
   } else navigateToSection(link.hash);
@@ -224,7 +240,7 @@ async function animateText() {
     splitLetters(element, { reveal: true, lines: true });
     element.classList.add('is-ready');
   }
-  document.querySelectorAll('.hero-nav a,.footer-nav a,.contact-credit,.price-link').forEach(link => prepareWholeRoll(link));
+  document.querySelectorAll('.hero-nav a,.footer-nav a,.contact-credit,.price-link,.menu-price-link').forEach(link => prepareWholeRoll(link));
   document.querySelectorAll('.panel-nav a').forEach((link, row) => {
     link.style.setProperty('--row-index', row);
     prepareWholeRoll(link,true);

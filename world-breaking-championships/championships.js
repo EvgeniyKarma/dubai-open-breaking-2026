@@ -260,7 +260,7 @@ function prepareScheduleText(element) {
   const words = [];
   scheduleCopies.get(element).split('\n').forEach((text, index) => {
     if (index) fragment.append(document.createElement('br'));
-    text.trim().split(/\s+/).forEach((word, wordIndex) => {
+    text.trim().split(/[ \t\r\n]+/).forEach((word, wordIndex) => {
       if (wordIndex) fragment.append(' ');
       const span = document.createElement('span');
       span.style.display = 'inline-block';

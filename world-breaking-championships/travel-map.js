@@ -25,6 +25,7 @@ let moved = false;
 let closeTimer;
 let animationTimer;
 let suppressClickUntil = 0;
+let mobileGesture = null;
 
 function positionTooltip(place) {
   const {marker,tooltip,offset} = place;
@@ -54,7 +55,7 @@ function render() {
 }
 function showTooltip(open, place=activePlace) {
   clearTimeout(closeTimer);
-  if (open && (!place || place.element.hidden || (moved && pointers.size))) return;
+  if (open && (!place || place.element.hidden || (moved && pointers.size) || mobileGesture)) return;
   for (const item of places) {
     const visible=open && item===place;
     item.element.classList.toggle('is-open', visible);
@@ -93,7 +94,7 @@ function startingView() {
   return category==='transport'?constrainMap({...fitted,y:0},dimensions):fitted;
 }
 function selectCategory(tab, moveFocus=false) {
-  if (pointers.size) endGesture();
+  if (pointers.size || mobileGesture) endGesture();
   panel.classList.remove('is-entering');
   category=tab.id.replace('travel-','').replace('-tab','');
   showInfo(false);
@@ -157,7 +158,7 @@ function animate(next) {
   animationTimer = setTimeout(() => map.classList.remove('is-animating'), 360);
 }
 function resize() {
-  if (pointers.size) endGesture();
+  if (pointers.size || mobileGesture) endGesture();
   interruptAnimation();
   const frame = map.getBoundingClientRect();
   const widthChanged=frame.width!==dimensions.width;
@@ -192,10 +193,14 @@ function endGesture() {
   const ids = [...pointers.keys()];
   pointers.clear();
   gesture = null;
+  mobileGesture = null;
   map.classList.remove('is-dragging');
   for (const id of ids) if (map.hasPointerCapture(id)) map.releasePointerCapture(id);
 }
 map.addEventListener('pointerdown', event => {
+  // Phone touch gestures use Touch Events so one finger remains a native page
+  // scroll. Mouse/pen and tablet dragging retain the existing pointer path.
+  if (innerWidth <= 600 && event.pointerType === 'touch') return;
   if (event.button !== 0 || event.target.closest('.travel-map-controls,.travel-tabs,.travel-tooltip,.transport-info,.map-info-toggle')) return;
   if (!pointers.size) {
     interruptAnimation();
@@ -240,6 +245,52 @@ function releasePointer(event) {
 window.addEventListener('pointerup', releasePointer);
 window.addEventListener('pointercancel', releasePointer);
 window.addEventListener('blur', endGesture);
+
+function phoneTouches(event) {
+  const box = map.getBoundingClientRect();
+  return [...event.touches].filter(touch => mobileGesture || (touch.clientX >= box.left && touch.clientX <= box.left + box.width &&
+    touch.clientY >= box.top && touch.clientY <= box.top + box.height)).slice(0, 2).map(localPoint);
+}
+function beginMobileGesture(points) {
+  const [a,b] = points;
+  mobileGesture = {state:{...state}, center:{x:(a.x+b.x)/2,y:(a.y+b.y)/2},
+    distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};
+  interruptAnimation();
+  moved = true;
+  suppressClickUntil = Date.now() + 400;
+  showTooltip(false);
+}
+map.addEventListener('touchstart', event => {
+  if (innerWidth > 600 || event.target.closest('.travel-map-controls,.travel-tabs,.travel-tooltip,.transport-info,.map-info-toggle')) return;
+  const points = phoneTouches(event);
+  if (points.length < 2) return; // Never cancel a one-finger scroll or marker tap.
+  event.preventDefault();
+  beginMobileGesture(points);
+}, {passive:false});
+map.addEventListener('touchmove', event => {
+  if (innerWidth > 600 || !mobileGesture) return;
+  const points = phoneTouches(event);
+  if (points.length < 2) return;
+  event.preventDefault();
+  const [a,b] = points;
+  state = zoomMap(mobileGesture.state, mobileGesture.state.scale * Math.hypot(a.x-b.x,a.y-b.y) / mobileGesture.distance,
+    mobileGesture.center, {x:(a.x+b.x)/2,y:(a.y+b.y)/2}, dimensions);
+  suppressClickUntil = Date.now() + 400;
+  map.classList.add('is-dragging');
+  render();
+}, {passive:false});
+function endMobileGesture(event) {
+  if (!mobileGesture) return;
+  const points = phoneTouches(event);
+  if (points.length >= 2 && event.type !== 'touchcancel') beginMobileGesture(points);
+  else {
+    mobileGesture = null;
+    map.classList.remove('is-dragging');
+    suppressClickUntil = Date.now() + 400;
+  }
+}
+map.addEventListener('touchend', endMobileGesture, {passive:true});
+map.addEventListener('touchcancel', endMobileGesture, {passive:true});
 map.addEventListener('click', event => {
   if (Date.now() >= suppressClickUntil || event.target.closest('.travel-map-controls,.travel-tabs,.transport-info,.map-info-toggle')) return;
   event.preventDefault();
@@ -257,6 +308,7 @@ for (const place of places) {
     },160);
   });
   element.addEventListener('focusin', () => {
+    if (innerWidth <= 600 && !element.querySelector(':focus-visible')) return;
     if (!pointers.size || element.querySelector(':focus-visible')) showTooltip(true,place);
   });
   element.addEventListener('focusout', event => {

@@ -77,6 +77,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .schedule-date{padding-top:calc(24 * var(--schedule-unit));font-size:calc(32 * var(--schedule-unit));line-height:1.1}
 .schedule-slot{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:calc(24 * var(--schedule-unit));padding:calc(24 * var(--schedule-unit)) 0 calc(64 * var(--schedule-unit))}
 .schedule-slot+.schedule-slot{padding-top:calc(24 * var(--schedule-unit))}
+.schedule-slot:last-child{padding-bottom:0}
 .schedule-event{min-width:0}
 .schedule-time{margin-bottom:calc(12 * var(--schedule-unit));font-size:calc(32 * var(--schedule-unit));line-height:1.1;color:#fa4f1f;letter-spacing:-.04em}
 .schedule h4{font-size:calc(32 * var(--schedule-unit));line-height:1.1}

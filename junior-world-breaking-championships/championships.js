@@ -248,10 +248,8 @@ async function animateText() {
 }
 animateText();
 
-// Responsive schedule: accessible day tabs and independently revealed text/lines.
+// Single-day schedule with scroll-triggered text and line reveals.
 const schedule = document.querySelector('.schedule');
-const scheduleTabs = [...document.querySelectorAll('.schedule-tab')];
-const scheduleDays = [...document.querySelectorAll('.schedule-day')];
 // Editorial headings and map labels share the same measured per-letter reveal pipeline.
 const scheduleText = [...document.querySelectorAll('[data-schedule-text]')];
 const scheduleCopies = new Map(scheduleText.map(element => {
@@ -259,7 +257,6 @@ const scheduleCopies = new Map(scheduleText.map(element => {
   copy.querySelectorAll('br').forEach(lineBreak => lineBreak.replaceWith('\n'));
   return [element, copy.textContent];
 }));
-let selectedDay = 0;
 let scheduleFrame = 0;
 let scheduleReady = false;
 let scheduleWidth = window.innerWidth;
@@ -269,7 +266,7 @@ const scheduleTextWidths = new WeakMap();
 // Preserve measured word wrapping while revealing individual letters, as in the hero.
 function prepareScheduleText(element) {
   const width = element.clientWidth;
-  // Keep existing letters (and their animation state) when switching days.
+  // Keep existing letters and their animation state when the width is unchanged.
   // Rebuild masks only for a new element or when its available width changes.
   if (element.classList.contains('is-prepared') && scheduleTextWidths.get(element) === width) return;
   const fragment = document.createDocumentFragment();
@@ -323,21 +320,11 @@ function prepareScheduleText(element) {
 }
 function syncScheduleLayout() {
   const previousScrollY = window.scrollY;
-  scheduleDays.forEach((day, index) => {
-    day.hidden = index !== selectedDay;
-    day.setAttribute('aria-labelledby', scheduleTabs[index].id);
-    day.setAttribute('role', 'tabpanel');
-  });
-  scheduleTabs.forEach((tab, index) => {
-    tab.setAttribute('aria-selected', String(index === selectedDay));
-    tab.tabIndex = index === selectedDay ? 0 : -1;
-  });
   if (scheduleReady) {
     scheduleText.forEach(element => {
       if (!element.closest('[hidden]')) prepareScheduleText(element);
     });
-    // Measuring hidden-to-visible panels can briefly shrink the document.
-    // Restore the reading position after all line masks have their final height.
+    // Preserve the reading position after rebuilding line masks on resize.
     window.scrollTo(0, previousScrollY);
     queueScheduleReveal();
   }
@@ -360,34 +347,6 @@ function revealSchedule(replayVisible = false) {
 function queueScheduleReveal() {
   if (!scheduleFrame) scheduleFrame = requestAnimationFrame(() => revealSchedule());
 }
-function selectScheduleDay(index, moveFocus = false) {
-  if (index === selectedDay) {
-    if (moveFocus) scheduleTabs[index].focus({ preventScroll: true });
-    return;
-  }
-  selectedDay = index;
-  const day = scheduleDays[index];
-  day.querySelectorAll('.is-revealed').forEach(element => element.classList.remove('is-revealed'));
-  syncScheduleLayout();
-  // Explicitly commit the reset so revisiting a tab restarts its mask animations.
-  day.getBoundingClientRect();
-  if (scheduleFrame) cancelAnimationFrame(scheduleFrame);
-  scheduleFrame = requestAnimationFrame(() => revealSchedule(true));
-  if (moveFocus) scheduleTabs[index].focus({ preventScroll: true });
-}
-scheduleTabs.forEach((tab, index) => {
-  tab.addEventListener('click', () => selectScheduleDay(index));
-  tab.addEventListener('keydown', event => {
-    let next;
-    if (event.key === 'ArrowRight') next = (index + 1) % scheduleTabs.length;
-    if (event.key === 'ArrowLeft') next = (index + scheduleTabs.length - 1) % scheduleTabs.length;
-    if (event.key === 'Home') next = 0;
-    if (event.key === 'End') next = scheduleTabs.length - 1;
-    if (next === undefined) return;
-    event.preventDefault();
-    selectScheduleDay(next, true);
-  });
-});
 window.addEventListener('scroll', queueScheduleReveal, { passive: true });
 window.addEventListener('resize', () => {
   queueScheduleReveal();

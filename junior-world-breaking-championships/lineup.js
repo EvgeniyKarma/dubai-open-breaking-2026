@@ -13,8 +13,10 @@ function initializeCardCarousel(section) {
   // Word wrappers retain natural line breaks; masks include glyph descenders.
   section.querySelectorAll('[data-lineup-text]').forEach(element => {
     const label = element.textContent;
-    element.setAttribute('aria-label', label);
-    element.replaceChildren();
+    const accessibleCopy = document.createElement('span');
+    accessibleCopy.className = 'schedule-sr-copy';
+    accessibleCopy.textContent = label;
+    element.replaceChildren(accessibleCopy);
     let index = 0;
     label.split(' ').forEach((word, wordIndex) => {
       if (wordIndex) element.append(' ');

@@ -40,6 +40,7 @@ function waitForVideoFrame(video) {
     }
 
     const cleanUp = () => {
+      window.clearTimeout(timeout);
       video.removeEventListener('loadeddata', onReady);
       video.removeEventListener('error', onError);
       video.removeEventListener('abort', onError);
@@ -47,6 +48,8 @@ function waitForVideoFrame(video) {
     const onReady = () => { cleanUp(); resolve(true); };
     const onError = () => { cleanUp(); resolve(false); };
 
+    // A stalled video request must not leave the page behind the preloader.
+    const timeout = window.setTimeout(onError, 6000);
     video.addEventListener('loadeddata', onReady, { once: true });
     video.addEventListener('error', onError, { once: true });
     video.addEventListener('abort', onError, { once: true });

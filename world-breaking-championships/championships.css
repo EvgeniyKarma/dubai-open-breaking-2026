@@ -535,3 +535,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
   .menu-registration:is(:hover,:focus-visible) .menu-signup{padding-left:16px}
   .menu-price-link{font-size:18px}
 }
+
+/* Keep both card categories readable when JavaScript is unavailable. */
+html:not(.js) .lineup-rail[hidden]{display:flex}
+html:not(.js) .lineup-tabs,html:not(.js) .lineup-arrow{display:none}

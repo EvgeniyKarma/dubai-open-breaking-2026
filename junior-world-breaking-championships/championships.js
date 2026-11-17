@@ -166,8 +166,15 @@ document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener(
 function splitLetters(element, { roll = false, reveal = false, lines = false } = {}) {
   const label = element.textContent.replace(/\s+/g, ' ').trim();
   const lineTexts = lines ? element.innerHTML.split(/<br\s*\/?\s*>/i).map(text => text.trim()) : [label];
-  element.setAttribute('aria-label', lines ? lineTexts.join(' ') : label);
+  const accessibleLabel = lines ? lineTexts.join(' ') : label;
   const fragment = document.createDocumentFragment();
+  if (element.tagName === 'P') {
+    // Paragraphs cannot be named with aria-label; retain real readable text.
+    const accessibleCopy = document.createElement('span');
+    accessibleCopy.className = 'schedule-sr-copy';
+    accessibleCopy.textContent = accessibleLabel;
+    fragment.append(accessibleCopy);
+  } else element.setAttribute('aria-label', accessibleLabel);
   let index = 0;
   for (const text of lineTexts) {
     const line = document.createElement('span');

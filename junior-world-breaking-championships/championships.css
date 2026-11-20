@@ -165,6 +165,7 @@ h1{font-size:6.25rem;font-weight:400;line-height:1;letter-spacing:-.04em}.discip
 .format-rule-table table{width:100%;table-layout:fixed;border-collapse:collapse;font:inherit;text-align:left}
 .format-rule-table th,.format-rule-table td{width:50%;padding:12px 0;vertical-align:top;border-top:1px solid #111;font-weight:400}
 .format-rule-table th{padding-right:12px}.format-rule-table td{padding-left:12px}.format-rule-table tr:last-child>*{padding-bottom:0}
+.format-note{margin:24px 0 0;font-size:16px;font-weight:400;line-height:1.4;letter-spacing:-.04em}
 @media(max-width:1200px){.format-title{font-size:min(calc(150 * 100vw / 1024),calc((var(--viewport-height) - var(--header-height) - 180px) / 2));white-space:normal;max-width:100%}.format-photo{object-position:50% 50%}}
 @media(max-width:600px){.format-title{font-size:min(calc(70 * 100vw / 440),calc((var(--viewport-height) - var(--header-height) - 202px) / 2))}.format-description{width:380px}.format-photo{height:104.72%;object-position:64% 50%}.format-panel-header{padding-top:max(16px,env(safe-area-inset-top))}.format-panel-content{padding-top:60px;padding-bottom:max(60px,env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.js .format-title .reveal-letter{transform:none}}
